@@ -1,0 +1,17 @@
+{
+  "required": true,
+  
+  // [Customize] (Remember to remove this comment!)
+  "package": "net.examplemod.mixin",
+
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+    "MixinTitleScreen"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

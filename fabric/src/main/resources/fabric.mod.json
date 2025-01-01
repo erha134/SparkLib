@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+
+  // [Customize] (Remember to remove this line)
+  "authors": [
+  ],
+
+  // [Customize] (Remember to remove this line)
+  "contributors": [
+  ],
+
+  "contact": {
+    "homepage": "${home_page}",
+    "sources": "${sources_page}",
+    "issues": "${issues_page}"
+  },
+  "license": "${license}",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      // [Customize] (Remember to remove this line)
+      "net.examplemod.fabric.ExampleModFabric"
+    ],
+    "client": [
+      // [Customize] (Remember to remove this line)
+      "net.examplemod.fabric.ExampleModFabricClient"
+    ]
+  },
+  "mixins": [
+    // [Customize] (Remember to remove this line)
+    "examplemod.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": "${minecraft_dependency}",
+    "architectury": "*"
+  }
+}

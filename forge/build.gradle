@@ -1,0 +1,126 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+}
+
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
+def generatedResources = file("src/generated")
+
+sourceSets {
+    main {
+        resources.srcDir generatedResources
+    }
+}
+
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    forge {
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+
+        mixinConfig "examplemod.mixins.json"
+    }
+
+    runs {
+        data {
+            data()
+            programArgs "--all", "--mod", "blockylib"
+            programArgs "--output", generatedResources.absolutePath
+//            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+        }
+    }
+}
+
+configurations {
+    common
+    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentForge.extendsFrom common
+}
+
+dependencies {
+    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
+    // Remove the next line if you don't want to depend on the API
+    modImplementation "dev.architectury:architectury-forge:${rootProject.architectury_version}"
+
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+    
+    // [Optional] Mixin Extras
+    // compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${rootProject.mixinextras_version}"))
+    // implementation(include("io.github.llamalad7:mixinextras-forge:${rootProject.mixinextras_version}"))
+}
+
+String issues = rootProject.mod_issues_page
+
+if (issues.isEmpty()) {
+    issues = rootProject.mod_sources_page
+
+    if (issues.endsWith("/")) {
+        issues += "issues"
+    } else {
+        issues += "/issues"
+    }
+}
+
+def props = [
+    "id": rootProject.mod_id,
+    "version": project.version,
+    "name": rootProject.mod_name,
+    "description": rootProject.mod_description,
+    "home_page": rootProject.mod_home_page,
+    "sources_page": rootProject.mod_sources_page,
+    "issues_page": issues,
+    "license": rootProject.mod_license,
+    "minecraft_dependency": rootProject.forge_minecraft_dependency,
+    "fml_dependency": rootProject.fml_dependency
+]
+
+processResources {
+    props.forEach { k, v ->
+        inputs.property k, v
+    }
+
+    filesMatching("META-INF/mods.toml") {
+        expand props
+    }
+}
+
+shadowJar {
+    exclude "fabric.mod.json"
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier = "dev-shadow"
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+}
+
+sourcesJar {
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}
+
+publishing {
+    publications {
+        mavenForge(MavenPublication) {
+            artifactId = rootProject.archives_base_name + "-" + project.name
+            from components.java
+        }
+    }
+}

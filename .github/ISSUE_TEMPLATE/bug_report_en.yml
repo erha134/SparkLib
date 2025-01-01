@@ -1,0 +1,91 @@
+name: Bug Report
+description: Reports bugs and something doesn't seem correct. (English Template)
+labels: [ "bug" ]
+body:
+  - type: checkboxes
+    id: pre-check
+    attributes:
+      label: Before reporting...
+      options:
+        - label: Example Mod is up to date (Latest GitHub Action Build)
+        - label: All dependencies are installed and up to date
+          required: true
+        - label: Similar issues don't exist in the issue tracker
+          required: true
+
+  - type: input
+    id: mc-version
+    attributes:
+      label: Minecraft version & side
+      placeholder: 1.20.1 Client
+    validations:
+      required: true
+
+  - type: input
+    id: mod-version
+    attributes:
+      label: Example Mod version
+      description: Versions are printed on startup.
+      placeholder: 1.0.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: OS & Java versions
+      description: Type `java -version` in console
+      placeholder: |
+        OS: Windows 10 22H2, 
+        Java: Zulu 21
+    validations:
+      required: true
+
+  - type: textarea
+    id: mods-list
+    attributes:
+      label: Mods
+      description: >-
+        Please find the list in the log file (usually at the beginning, use search)
+        <br>Try to remove unrelated mods before reporting
+      placeholder: 'Mods list here'
+      render: 'raw'
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: >-
+        A clear and concise description of what the bug is.
+        <br>If applicable, add screenshots to help explain the bug.
+        <br>The more and clearer you provide, the faster we process.
+      placeholder: Something should(not) happen, but it does(not).
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Please assume we have no idea how mods work.
+      placeholder: |
+        1. Create a world
+
+        2. Wait until midnight
+
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: >-
+        If it's a crash, send the corresponding Minecraft log in the `logs` folder, or crash report in the `crash-reports` folder, here.
+        <br>Please upload the log file as an attachment, or upload the log to [pastebin](https://pastebin.com/) / [mclo.gs](https://mclo.gs/) and paste the url here.
+        <br>Leave empty if there is none.
+        <br>**DO NOT COPY PASTE LOG CONTENT DIRECTLY!**
+      placeholder: Drag log file here to upload or external pastebin link.
