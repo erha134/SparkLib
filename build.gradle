@@ -50,8 +50,8 @@ subprojects {
         mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
 
         // [Optional] Other dependencies
-        // implementation "com.google.code.findbugs:jsr305:${rootProject.jsr305_version}"
-        // annotationProcessor(compileOnly("org.projectlombok:lombok:${rootProject.lombok_version}"))
+         implementation "com.google.code.findbugs:jsr305:${rootProject.jsr305_version}"
+         annotationProcessor(compileOnly("org.projectlombok:lombok:${rootProject.lombok_version}"))
     }
 }
 

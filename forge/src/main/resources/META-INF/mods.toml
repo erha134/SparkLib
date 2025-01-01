@@ -7,11 +7,8 @@ license = "${license}"
 modId = "${id}"
 version = "${version}"
 displayName = "${name}"
-
-# [Customize]
-authors = "Me!"
+authors = "Block_Mrlimr267 (erha134)"
 credits = ""
-
 displayURL = "${home_page}"
 description = '''
 ${description}

@@ -1,4 +1,3 @@
 {
-  // [Customize] (Remember to remove this comment!)
-  "accessWidener": "examplemod.accesswidener"
+  "accessWidener": "spark-lib.accesswidener"
 }

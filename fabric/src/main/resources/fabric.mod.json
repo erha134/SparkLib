@@ -4,15 +4,11 @@
   "version": "${version}",
   "name": "${name}",
   "description": "${description}",
-
-  // [Customize] (Remember to remove this line)
   "authors": [
+    "Block_Mrlimr267 (erha134)"
   ],
-
-  // [Customize] (Remember to remove this line)
   "contributors": [
   ],
-
   "contact": {
     "homepage": "${home_page}",
     "sources": "${sources_page}",
@@ -23,17 +19,14 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      // [Customize] (Remember to remove this line)
-      "net.examplemod.fabric.ExampleModFabric"
+      "io.github.erha134.mc.sparklib.fabric.SparkLibFabric"
     ],
     "client": [
-      // [Customize] (Remember to remove this line)
-      "net.examplemod.fabric.ExampleModFabricClient"
+      "io.github.erha134.mc.sparklib.fabric.client.SparkLibFabricClient"
     ]
   },
   "mixins": [
-    // [Customize] (Remember to remove this line)
-    "examplemod.mixins.json"
+    "spark-lib.mixins.json"
   ],
   "depends": {
     "fabric": "*",
