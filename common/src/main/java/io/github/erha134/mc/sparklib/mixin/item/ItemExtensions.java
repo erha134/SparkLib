@@ -1,6 +1,6 @@
 package io.github.erha134.mc.sparklib.mixin.item;
 
-import io.github.erha134.mc.sparklib.registry.Registrable;
+import io.github.erha134.mc.sparklib.registry.api.Registrable;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
