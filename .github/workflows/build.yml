@@ -47,7 +47,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-    if: github.repository_owner == 'your GitHub username' && contains(github.event.head_commit.message, '[release]') == true
+    if: github.repository_owner == 'erha134' && contains(github.event.head_commit.message, '[release]') == true
     runs-on: ${{ matrix.os }}
     needs: build
     steps:
