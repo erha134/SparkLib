@@ -1,5 +1,6 @@
 package io.github.erha134.mc.sparklib.util;
 
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
@@ -7,7 +8,7 @@ import net.minecraft.registry.tag.TagKey;
 import java.util.function.Consumer;
 import java.util.stream.StreamSupport;
 
-public class RegistryUtils {
+public final class RegistryUtils {
     public static <T> void forEachValues(Registry<T> registry, Consumer<T> consumer) {
         registry.stream()
                 .forEach(consumer);
@@ -30,5 +31,9 @@ public class RegistryUtils {
 //                .filter(RegistryEntry::hasKeyAndValue)  // removes null entries
                 .map(RegistryEntry::value)
                 .forEach(consumer);
+    }
+
+    public static void forEachRegistries(Consumer<Registry<?>> consumer) {
+        Registries.REGISTRIES.forEach(consumer);
     }
 }

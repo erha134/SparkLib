@@ -22,7 +22,7 @@ loom {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
-        mixinConfig "examplemod.mixins.json"
+        mixinConfig "sparklib.mixins.json"
     }
 
     runs {

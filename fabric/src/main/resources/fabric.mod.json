@@ -26,7 +26,7 @@
     ]
   },
   "mixins": [
-    "spark-lib.mixins.json"
+    "sparklib.mixins.json"
   ],
   "depends": {
     "fabric": "*",
