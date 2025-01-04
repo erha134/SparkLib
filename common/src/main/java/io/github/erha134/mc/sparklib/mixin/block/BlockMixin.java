@@ -5,6 +5,7 @@ import io.github.erha134.mc.sparklib.extension.block.BlockExtensions;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,5 +26,15 @@ public abstract class BlockMixin
     @Override
     public RegistryEntry<Block> sparklib$registryEntry() {
         return this.registryEntry;
+    }
+
+    @Override
+    public Block sparklib$asBlock() {
+        return (Block) (Object) this;
+    }
+
+    @Override
+    public ItemStack sparklib$asStack() {
+        return new ItemStack(this);
     }
 }
