@@ -43,25 +43,6 @@ jobs:
             fabric/build/libs
             forge/build/libs
 
-  release:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-    if: github.repository_owner == 'erha134' && contains(github.event.head_commit.message, '[release]') == true
-    runs-on: ${{ matrix.os }}
-    needs: build
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v4
-
-      - name: download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: Artifacts
-          path: | 
-            fabric/build/libs
-            forge/build/libs
-
       - name: get short sha
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
@@ -73,6 +54,7 @@ jobs:
           properties: "mod_version minecraft_version"
 
       - name: create github release
+        if: github.repository_owner == 'erha134' && contains(github.event.head_commit.message, '[release]') == true
         uses: softprops/action-gh-release@v2
         with:
           name: "${{ steps.prop_info.outputs.mod_version }}"
