@@ -1,7 +1,7 @@
-package io.github.erha134.mc.sparklib.mixin.item;
+package io.github.erha134.mc.sparklib.mixin.inject.item;
 
 import dev.architectury.extensions.injected.InjectedItemExtension;
-import io.github.erha134.mc.sparklib.extension.item.ItemExtensions;
+import io.github.erha134.mc.sparklib.mixin.extension.item.ItemExtensions;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;

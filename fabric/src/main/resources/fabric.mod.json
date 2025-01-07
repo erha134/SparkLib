@@ -22,7 +22,9 @@
       "io.github.erha134.mc.sparklib.fabric.SparkLibFabric"
     ],
     "client": [
-      "io.github.erha134.mc.sparklib.fabric.client.SparkLibFabricClient"
+      "io.github.erha134.mc.sparklib.client.fabric.SparkLibFabricClient"
+    ],
+    "fabric-datagen": [
     ]
   },
   "mixins": [

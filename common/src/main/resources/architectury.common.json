@@ -2,10 +2,10 @@
   "accessWidener": "sparklib.accesswidener",
   "injected_interfaces": {
     "net/minecraft/class_1792": [
-      "io/github/erha134/mc/sparklib/extension/item/ItemExtensions"
+      "io/github/erha134/mc/sparklib/mixin/extension/item/ItemExtensions"
     ],
     "net/minecraft/class_2248": [
-      "io/github/erha134/mc/sparklib/extension/block/BlockExtensions"
+      "io/github/erha134/mc/sparklib/mixin/extension/block/BlockExtensions"
     ]
   }
 }

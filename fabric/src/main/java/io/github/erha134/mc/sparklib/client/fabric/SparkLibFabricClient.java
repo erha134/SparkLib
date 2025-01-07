@@ -1,4 +1,4 @@
-package io.github.erha134.mc.sparklib.fabric.client;
+package io.github.erha134.mc.sparklib.client.fabric;
 
 import io.github.erha134.mc.sparklib.client.SparkLibClient;
 import net.fabricmc.api.ClientModInitializer;
