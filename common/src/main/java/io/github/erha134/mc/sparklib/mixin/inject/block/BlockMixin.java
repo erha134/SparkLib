@@ -1,7 +1,7 @@
 package io.github.erha134.mc.sparklib.mixin.inject.block;
 
 import dev.architectury.extensions.injected.InjectedBlockExtension;
-import io.github.erha134.mc.sparklib.mixin.extension.block.BlockExtensions;
+import io.github.erha134.mc.sparklib.extension.block.BlockExtensions;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemConvertible;
