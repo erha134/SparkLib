@@ -2,7 +2,7 @@ package io.github.erha134.mc.sparklib.extension.block;
 
 import io.github.erha134.mc.sparklib.block.BlockProvider;
 import io.github.erha134.mc.sparklib.item.stack.ItemStackProvider;
-import io.github.erha134.mc.sparklib.registry.api.Registrable;
+import io.github.erha134.mc.sparklib.registration.api.Registrable;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;

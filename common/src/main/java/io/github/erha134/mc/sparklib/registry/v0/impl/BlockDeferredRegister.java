@@ -1,6 +1,6 @@
-package io.github.erha134.mc.sparklib.registry.impl;
+package io.github.erha134.mc.sparklib.registry.v0.impl;
 
-import io.github.erha134.mc.sparklib.registry.api.DoubleWrappedDeferredRegister;
+import io.github.erha134.mc.sparklib.registry.v0.api.DoubleWrappedDeferredRegister;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

@@ -1,4 +1,4 @@
-package io.github.erha134.mc.sparklib.registry.api;
+package io.github.erha134.mc.sparklib.registry.v0.api;
 
 import dev.architectury.registry.registries.RegistrySupplier;
 

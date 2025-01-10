@@ -1,11 +1,11 @@
-package io.github.erha134.mc.sparklib.registry.impl;
+package io.github.erha134.mc.sparklib.registry.v0.impl;
 
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.client.rendering.ColorHandlerRegistry;
 import dev.architectury.registry.fuel.FuelRegistry;
 import dev.architectury.registry.registries.RegistrySupplier;
 import io.github.erha134.mc.sparklib.item.ItemProvider;
-import io.github.erha134.mc.sparklib.registry.api.WrappedRegistrySupplier;
+import io.github.erha134.mc.sparklib.registry.v0.api.WrappedRegistrySupplier;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
