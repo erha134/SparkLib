@@ -1,11 +1,13 @@
-package io.github.erha134.mc.sparklib.registry.v0.impl;
+package io.github.erha134.mc.sparklib.registry.impl;
 
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.client.rendering.ColorHandlerRegistry;
 import dev.architectury.registry.fuel.FuelRegistry;
 import dev.architectury.registry.registries.RegistrySupplier;
 import io.github.erha134.mc.sparklib.item.ItemProvider;
-import io.github.erha134.mc.sparklib.registry.v0.api.WrappedRegistrySupplier;
+import io.github.erha134.mc.sparklib.registry.api.WrappedRegistrySupplier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -17,21 +19,22 @@ public class ItemRegistrySupplier<I extends Item> extends WrappedRegistrySupplie
 
     @Override
     public Item asItem() {
-        return this.delegate.get();
+        return this.get();
     }
 
     public ItemRegistrySupplier<I> group(RegistrySupplier<ItemGroup> group) {
-        CreativeTabRegistry.append(group, this);
+        CreativeTabRegistry.append(group, this.get());
         return this;
     }
 
     public ItemRegistrySupplier<I> fuel(int tick) {
-        FuelRegistry.register(tick, this);
+        FuelRegistry.register(tick, this.get());
         return this;
     }
 
+    @Environment(EnvType.CLIENT)
     public ItemRegistrySupplier<I> color(ItemColorProvider color) {
-        ColorHandlerRegistry.registerItemColors(color, this);
+        ColorHandlerRegistry.registerItemColors(color, this.get());
         return this;
     }
 }
