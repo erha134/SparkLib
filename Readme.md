@@ -8,7 +8,7 @@ Wiki is coming soon.
 
 | Minecraft version | Latest version | Fabric support | Forge support | NeoForge support | Git branch | Maintaining status |
 |-------------------|----------------|----------------|---------------|------------------|------------|--------------------|
-| 1.20-1.20.1       | 1.0.0-beta.1   | ✅              | ✅             | ❌                | 1.20       | ✅                  |
+| 1.20-1.20.1       | 1.0.0-beta.2   | ✅              | ✅             | ❌                | 1.20       | ✅                  |
 
 ## Dependencies
 
@@ -19,24 +19,28 @@ Wiki is coming soon.
 
 ## Features
 
-- [`WrappedDeferredRegister`](https://github.com/erha134/SparkLib/blob/1.20/common/src/main/java/io/github/erha134/mc/sparklib/registry/api/WrappedDeferredRegister.java) API: Wrap a `DeferredRegister` and add more features.
 - [`Registrable`](https://github.com/erha134/SparkLib/blob/1.20/common/src/main/java/io/github/erha134/mc/sparklib/registration/api/Registrable.java) API: Get `RegistryEntry`s from items, blocks, etc.
-- Shield API: Make your own shields in Minecraft.
+- Shield API: Make your own shields in Minecraft. (Experimental)
 - Basic classes
 
 ## Todos
 
 ### High Priority
 
-- [ ] Config system and auto-generated in-game config screens
+- [ ] Config API
+- - [ ] Config serializer and deserializer
+- - - [ ] TOML
+- - - [ ] JSON
+- - - [ ] YAML
+- - [ ] In-game config screens
 - [ ] Version checker
 - [ ] Network API
 - [ ] Annotation-driven register
+- [ ] Data Generation API
 
 ### Low Priority
 
 - [ ] Bucket with Mob
-- [ ] Data Generation API
 - [ ] Fluid API
 - [ ] Energy API
 - [ ] Transfer API

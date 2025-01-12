@@ -1,4 +1,4 @@
-package io.github.erha134.mc.sparklib.registration.api;
+package io.github.erha134.mc.sparklib.registry.api;
 
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;

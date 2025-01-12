@@ -6,7 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
-public final class SparkLibFabricClient implements ClientModInitializer {
+public final class SparkLibClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         SparkLibClient.initClient();
