@@ -8,7 +8,7 @@ Wiki is coming soon.
 
 | Minecraft version | Latest version | Fabric support | Forge support | NeoForge support | Git branch | Maintaining status |
 |-------------------|----------------|----------------|---------------|------------------|------------|--------------------|
-| 1.20-1.20.1       | 1.0.0-beta.2   | ✅              | ✅             | ❌                | 1.20       | ✅                  |
+| 1.20-1.20.1       | 1.0.0-beta.3   | ✅              | ✅             | ❌                | 1.20       | ✅                  |
 
 ## Dependencies
 
