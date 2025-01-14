@@ -33,7 +33,7 @@ Wiki is coming soon.
     - [ ] JSON
     - [ ] YAML
   - [ ] In-game config screens
-- [ ] Version checker
+- [x] Version checker
 - [ ] Network API
 - [ ] Annotation-driven register
 - [ ] Data Generation API

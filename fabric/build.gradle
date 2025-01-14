@@ -31,6 +31,8 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+
+    include(implementation("org.apache.maven:maven-artifact:${rootProject.apache_maven_artifact_version}"))
 }
 
 String issues = rootProject.mod_issues_page
