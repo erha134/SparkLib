@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "io.github.erha134.mc.sparklib.mixin.fabric",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": [
+    "access.data.FabricDataGeneratorAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

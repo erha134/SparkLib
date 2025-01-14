@@ -25,10 +25,12 @@
       "io.github.erha134.mc.sparklib.client.fabric.SparkLibClientFabric"
     ],
     "fabric-datagen": [
+      "io.github.erha134.mc.sparklib.data.fabric.SparkLibDataGenerationFabric"
     ]
   },
   "mixins": [
-    "sparklib.mixins.json"
+    "sparklib.mixins.json",
+    "sparklib-fabric.mixins.json"
   ],
   "depends": {
     "fabric": "*",
