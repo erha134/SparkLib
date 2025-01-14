@@ -28,11 +28,11 @@ Wiki is coming soon.
 ### High Priority
 
 - [ ] Config API
-- - [ ] Config serializer and deserializer
-- - - [ ] TOML
-- - - [ ] JSON
-- - - [ ] YAML
-- - [ ] In-game config screens
+  - [ ] Config serializer and deserializer
+    - [ ] TOML
+    - [ ] JSON
+    - [ ] YAML
+  - [ ] In-game config screens
 - [ ] Version checker
 - [ ] Network API
 - [ ] Annotation-driven register
