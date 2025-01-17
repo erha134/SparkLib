@@ -18,7 +18,7 @@ public abstract class ItemMixin
     public abstract RegistryEntry.Reference<Item> getRegistryEntry();
 
     @Override
-    public RegistryEntry<Item> sparklib$registryEntry() {
+    public RegistryEntry.Reference<Item> sparklib$entry() {
         return this.getRegistryEntry();
     }
 

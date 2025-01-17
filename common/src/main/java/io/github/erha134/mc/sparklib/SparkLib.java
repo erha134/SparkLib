@@ -6,11 +6,14 @@ import dev.architectury.platform.Platform;
 import io.github.erha134.mc.sparklib.item.shield.DamageableShield;
 import io.github.erha134.mc.sparklib.recipe.SRecipeSerializers;
 import io.github.erha134.mc.sparklib.recipe.SRecipeTypes;
+import io.github.erha134.mc.sparklib.test.TestItems;
+import io.github.erha134.mc.sparklib.test.TestTags;
 import io.github.erha134.mc.sparklib.util.VersionChecker;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +43,8 @@ public final class SparkLib {
         });
 
         if (Platform.isDevelopmentEnvironment()) {
+            TestItems.register();
+            TestTags.register();
             CompletableFuture.supplyAsync(() -> VersionChecker.doCheck("47.3.22",
                             "https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json"))
                     .thenAccept(c -> LOGGER.info("[Version Checker Test] status: {}, current: {}, recommended: {}, latest: {}",
@@ -52,5 +57,9 @@ public final class SparkLib {
 
     private SparkLib() {
         // NO-OP
+    }
+
+    public static Identifier id(String path) {
+        return new Identifier(MOD_ID, path);
     }
 }

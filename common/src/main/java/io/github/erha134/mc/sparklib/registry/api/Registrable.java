@@ -8,13 +8,17 @@ import net.minecraft.util.Identifier;
 public interface Registrable<T> {
     Registry<T> sparklib$registry();
 
-    RegistryEntry<T> sparklib$registryEntry();
-
-    default RegistryKey<T> sparklib$registryKey() {
-        return sparklib$registryEntry().getKey().orElseThrow();
+    default RegistryKey<Registry<T>> sparklib$registryKey() {
+        return (RegistryKey<Registry<T>>) sparklib$registry().getKey();
     }
 
-    default Identifier sparklib$id() {
-        return sparklib$registryKey().getValue();
+    RegistryEntry.Reference<T> sparklib$entry();
+
+    default RegistryKey<T> sparklib$entryKey() {
+        return sparklib$entry().registryKey();
+    }
+
+    default Identifier sparklib$entryId() {
+        return sparklib$entryKey().getValue();
     }
 }

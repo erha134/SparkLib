@@ -8,7 +8,7 @@ Wiki is coming soon.
 
 | Minecraft version | Latest version | Fabric support | Forge support | NeoForge support | Git branch | Maintaining status |
 |-------------------|----------------|----------------|---------------|------------------|------------|--------------------|
-| 1.20-1.20.1       | 1.0.0-beta.3   | ✅              | ✅             | ❌                | 1.20       | ✅                  |
+| 1.20-1.20.1       | 1.0.0-beta.4   | ✅              | ✅             | ❌                | 1.20       | ✅                  |
 
 ## Dependencies
 
@@ -34,9 +34,8 @@ Wiki is coming soon.
     - [ ] YAML
   - [ ] In-game config screens
 - [x] Version checker
-- [ ] Network API
 - [ ] Annotation-driven register
-- [ ] Data Generation API
+- [x] Data Generation API
 
 ### Low Priority
 

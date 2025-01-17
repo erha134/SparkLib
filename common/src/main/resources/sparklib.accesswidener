@@ -1,2 +1,16 @@
 accessWidener   v2  named
-accessible method net/minecraft/data/DataGenerator$Pack <init> (Lnet/minecraft/data/DataGenerator;ZLjava/lang/String;Lnet/minecraft/data/DataOutput;)V
+
+# Screen Handler
+accessible method net/minecraft/screen/ScreenHandler addSlot (Lnet/minecraft/screen/slot/Slot;)Lnet/minecraft/screen/slot/Slot;
+
+# TagProvider
+accessible field net/minecraft/data/server/tag/TagProvider registryLoadFuture Ljava/util/concurrent/CompletableFuture;
+accessible field net/minecraft/data/server/tag/TagProvider parentTagLookupFuture Ljava/util/concurrent/CompletableFuture;
+accessible field net/minecraft/data/server/tag/TagProvider tagBuilders Ljava/util/Map;
+accessible field net/minecraft/data/server/tag/TagProvider LOGGER Lorg/slf4j/Logger;
+accessible field net/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder builder Lnet/minecraft/registry/tag/TagBuilder;
+extendable method net/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder add (Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder;
+extendable method net/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder add ([Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder;
+extendable method net/minecraft/registry/tag/TagEntry <init> (Lnet/minecraft/util/Identifier;ZZ)V
+accessible field net/minecraft/registry/tag/TagEntry id Lnet/minecraft/util/Identifier;
+accessible field net/minecraft/registry/tag/TagEntry required Z

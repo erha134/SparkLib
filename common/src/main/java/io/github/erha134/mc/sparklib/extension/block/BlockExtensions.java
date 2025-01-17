@@ -16,7 +16,7 @@ public interface BlockExtensions extends Registrable<Block>, BlockProvider, Item
     }
 
     @Override
-    default RegistryEntry<Block> sparklib$registryEntry() {
+    default RegistryEntry.Reference<Block> sparklib$entry() {
         throw new UnsupportedOperationException();
     }
 

@@ -6,7 +6,8 @@
   "client": [
   ],
   "mixins": [
-    "access.data.FabricDataGeneratorAccessor"
+    "access.data.FabricDataGeneratorAccessor",
+    "inject.data.FabricDataGeneratorMixin"
   ],
   "injectors": {
     "defaultRequire": 1

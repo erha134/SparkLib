@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class VersionChecker {
+public final class VersionChecker {
     public enum Status {
         PENDING,
         FAILED,

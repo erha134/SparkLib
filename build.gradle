@@ -32,16 +32,13 @@ subprojects {
             }
         }
         maven {
-            url = "https://maven.ladysnake.org/releases/"
+            url = "https://jitpack.io/"
         }
         maven {
             url = "https://maven.terraformersmc.com/releases/"
         }
         maven {
-            url = "https://jitpack.io/"
-            content {
-                includeGroupAndSubgroups "com.github"
-            }
+            url = "https://maven.ladysnake.org/releases/"
         }
     }
 

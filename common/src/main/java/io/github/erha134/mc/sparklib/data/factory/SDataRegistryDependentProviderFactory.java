@@ -1,4 +1,4 @@
-package io.github.erha134.mc.sparklib.data.provider;
+package io.github.erha134.mc.sparklib.data.factory;
 
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;

@@ -4,6 +4,7 @@ import dev.architectury.platform.forge.EventBuses;
 import io.github.erha134.mc.sparklib.SparkLib;
 import io.github.erha134.mc.sparklib.client.SparkLibClient;
 import io.github.erha134.mc.sparklib.data.SparkLibDataGeneration;
+import io.github.erha134.mc.sparklib.data.forge.SDataGenerationForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -24,7 +25,7 @@ public final class SparkLibForge {
         bus.addListener(this::gatherData);
     }
 
-    private void gatherData(GatherDataEvent event) {
-        SparkLibDataGeneration.initDataGen(event.getGenerator(), event.getLookupProvider());
+    private void gatherData(GatherDataEvent e) {
+        SparkLibDataGeneration.initDataGen(SDataGenerationForge.create(SparkLib.MOD_ID, e));
     }
 }

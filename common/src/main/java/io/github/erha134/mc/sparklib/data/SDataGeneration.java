@@ -1,7 +1,7 @@
 package io.github.erha134.mc.sparklib.data;
 
-import io.github.erha134.mc.sparklib.data.provider.SDataProviderFactory;
-import io.github.erha134.mc.sparklib.data.provider.SDataRegistryDependentProviderFactory;
+import io.github.erha134.mc.sparklib.data.factory.SDataProviderFactory;
+import io.github.erha134.mc.sparklib.data.factory.SDataRegistryDependentProviderFactory;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.registry.RegistryWrapper;

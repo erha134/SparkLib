@@ -28,8 +28,9 @@ loom {
     runs {
         data {
             data()
-            programArgs "--all", "--mod", "blockylib"
+            programArgs "--all", "--mod", "sparklib"
             programArgs "--output", generatedResources.absolutePath
+
 //            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
         }
     }
@@ -56,6 +57,10 @@ dependencies {
     // implementation(include("io.github.llamalad7:mixinextras-forge:${rootProject.mixinextras_version}"))
 
     include(implementation("org.apache.maven:maven-artifact:${rootProject.apache_maven_artifact_version}"))
+    include(api("com.github.erha134:EasyLib:${rootProject.easylib_version}"))
+
+    // fix runtime NoClassDefError
+    forgeRuntimeLibrary "com.github.erha134:EasyLib:${rootProject.easylib_version}"
 }
 
 String issues = rootProject.mod_issues_page

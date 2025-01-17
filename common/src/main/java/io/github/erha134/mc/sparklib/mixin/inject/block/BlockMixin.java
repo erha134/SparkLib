@@ -24,7 +24,7 @@ public abstract class BlockMixin
     }
 
     @Override
-    public RegistryEntry<Block> sparklib$registryEntry() {
+    public RegistryEntry.Reference<Block> sparklib$entry() {
         return this.registryEntry;
     }
 

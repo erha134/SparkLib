@@ -1,13 +1,15 @@
 package io.github.erha134.mc.sparklib.data;
 
-import io.github.erha134.mc.sparklib.SparkLib;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.registry.RegistryWrapper;
-
-import java.util.concurrent.CompletableFuture;
+import dev.architectury.platform.Platform;
+import io.github.erha134.mc.sparklib.test.TestLanguageProvider;
+import io.github.erha134.mc.sparklib.test.TestTagProvider;
 
 public class SparkLibDataGeneration {
-    public static void initDataGen(DataGenerator generator, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-        new SDataGeneration(SparkLib.MOD_ID, generator, registriesFuture).run();
+    public static void initDataGen(SDataGeneration dataGeneration) {
+        if (Platform.isDevelopmentEnvironment()) {
+            dataGeneration.addProvider(TestLanguageProvider::new);
+            dataGeneration.addProvider(TestTagProvider::new);
+        }
+        dataGeneration.run();
     }
 }

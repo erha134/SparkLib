@@ -1,7 +1,8 @@
-package io.github.erha134.mc.sparklib.util;
+package io.github.erha134.mc.sparklib.registry;
 
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 
@@ -35,5 +36,9 @@ public final class RegistryUtils {
 
     public static void forEachRegistries(Consumer<Registry<?>> consumer) {
         Registries.REGISTRIES.forEach(consumer);
+    }
+
+    public static <R> RegistryKey<R> getRegistryKeyForEntry(Registry<R> registry, R entry) {
+        return registry.getKey(entry).orElseThrow();
     }
 }

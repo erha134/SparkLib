@@ -33,6 +33,7 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
     include(implementation("org.apache.maven:maven-artifact:${rootProject.apache_maven_artifact_version}"))
+    include(api("com.github.erha134:EasyLib:${rootProject.easylib_version}"))
 }
 
 String issues = rootProject.mod_issues_page
