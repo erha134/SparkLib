@@ -111,7 +111,7 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
         private final List<TagEntry> entries = new ArrayList<>();
         private final boolean replace;
 
-        private STagBuilder(boolean replace, Registry<T> registry) {
+        private STagBuilder(boolean replace) {
             this.replace = replace;
         }
 
