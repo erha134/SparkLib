@@ -17,17 +17,17 @@ public class SimpleArmorMaterial implements ArmorMaterial {
         map.put(ArmorItem.Type.CHESTPLATE, 16);
         map.put(ArmorItem.Type.HELMET, 11);
     });
-    @Getter
+    @Getter(onMethod_ = {@Override})
     private final String name;
     private final int durabilityMultiplier;
     private final EnumMap<ArmorItem.Type, Integer> protectionAmounts;
-    @Getter
+    @Getter(onMethod_ = {@Override})
     private final int enchantability;
-    @Getter
+    @Getter(onMethod_ = {@Override})
     private final SoundEvent equipSound;
-    @Getter
+    @Getter(onMethod_ = {@Override})
     private final float toughness;
-    @Getter
+    @Getter(onMethod_ = {@Override})
     private final float knockbackResistance;
     private final Supplier<Ingredient> repairIngredientSupplier;
 
