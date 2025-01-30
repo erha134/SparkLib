@@ -13,12 +13,11 @@ import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShieldDecorationRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 public class SShieldDecorationRecipe extends ShieldDecorationRecipe {
-    public SShieldDecorationRecipe(Identifier identifier, CraftingRecipeCategory craftingRecipeCategory) {
-        super(identifier, craftingRecipeCategory);
+    public SShieldDecorationRecipe(CraftingRecipeCategory craftingRecipeCategory) {
+        super(craftingRecipeCategory);
     }
 
     @Override

@@ -2,16 +2,17 @@ package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import io.github.erha134.easylib.string.StringFormatter;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.loottable.LootTableGenerator;
-import net.minecraft.loot.LootDataType;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public abstract class SSimpleLootTableProvider extends SDataProvider implements 
     private final LootContextType lootContextType;
 
     public SSimpleLootTableProvider(String modId, DataOutput output, LootContextType lootContextType) {
-        super(StringFormatter.format("{} Loot Table Provider by Spark Lib", LootContextTypes.getId(lootContextType)),
+        super(StringFormatter.format("{} Loot Table Provider by Spark Lib", LootContextTypes.MAP.inverse().get(lootContextType)),
                 modId,
                 output);
         this.lootContextType = lootContextType;
@@ -45,7 +46,8 @@ public abstract class SSimpleLootTableProvider extends SDataProvider implements 
         final List<CompletableFuture<?>> futures = new ArrayList<>();
 
         for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
-            JsonObject tableJson = (JsonObject) LootDataType.LOOT_TABLES.getGson().toJsonTree(entry.getValue());
+            JsonObject tableJson = (JsonObject) Util.getResult(LootTable.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()),
+                    IllegalStateException::new);
 //            ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 
             // getOutputPath(fabricDataOutput, entry.getKey())

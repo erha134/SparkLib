@@ -20,3 +20,6 @@ accessible field net/minecraft/data/server/recipe/RecipeProvider advancementsPat
 extendable method net/minecraft/data/client/ModelProvider getName ()Ljava/lang/String;
 accessible field net/minecraft/data/client/ModelProvider blockstatesPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
 accessible field net/minecraft/data/client/ModelProvider modelsPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
+
+# Loot Provider
+accessible field net/minecraft/loot/context/LootContextTypes MAP Lcom/google/common/collect/BiMap;
