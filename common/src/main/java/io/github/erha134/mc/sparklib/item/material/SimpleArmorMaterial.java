@@ -1,5 +1,6 @@
 package io.github.erha134.mc.sparklib.item.material;
 
+import lombok.Getter;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.recipe.Ingredient;
@@ -16,13 +17,17 @@ public class SimpleArmorMaterial implements ArmorMaterial {
         map.put(ArmorItem.Type.CHESTPLATE, 16);
         map.put(ArmorItem.Type.HELMET, 11);
     });
-
+    @Getter
     private final String name;
     private final int durabilityMultiplier;
     private final EnumMap<ArmorItem.Type, Integer> protectionAmounts;
+    @Getter
     private final int enchantability;
+    @Getter
     private final SoundEvent equipSound;
+    @Getter
     private final float toughness;
+    @Getter
     private final float knockbackResistance;
     private final Supplier<Ingredient> repairIngredientSupplier;
 
@@ -48,32 +53,7 @@ public class SimpleArmorMaterial implements ArmorMaterial {
     }
 
     @Override
-    public int getEnchantability() {
-        return this.enchantability;
-    }
-
-    @Override
-    public SoundEvent getEquipSound() {
-        return this.equipSound;
-    }
-
-    @Override
     public Ingredient getRepairIngredient() {
         return this.repairIngredientSupplier.get();
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public float getToughness() {
-        return this.toughness;
-    }
-
-    @Override
-    public float getKnockbackResistance() {
-        return this.knockbackResistance;
     }
 }

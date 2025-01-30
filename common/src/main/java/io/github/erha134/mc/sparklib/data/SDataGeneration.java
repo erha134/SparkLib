@@ -5,12 +5,16 @@ import io.github.erha134.mc.sparklib.data.factory.SDataRegistryDependentProvider
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.registry.RegistryWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class SDataGeneration {
+    public static final Logger LOGGER = LoggerFactory.getLogger(SDataGeneration.class);
+
     private final String modId;
     private final DataGenerator.Pack pack;
     private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;

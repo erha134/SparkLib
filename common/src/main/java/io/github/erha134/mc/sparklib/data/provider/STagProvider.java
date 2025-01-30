@@ -4,12 +4,10 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import io.github.erha134.easylib.string.StringFormatter;
 import io.github.erha134.mc.sparklib.registry.api.Registrable;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.tag.TagProvider;
-import net.minecraft.item.Item;
 import net.minecraft.registry.*;
 import net.minecraft.registry.tag.*;
 import net.minecraft.util.Identifier;
@@ -22,6 +20,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static io.github.erha134.mc.sparklib.data.SDataGeneration.LOGGER;
 
 public abstract class STagProvider<T> extends TagProvider<T> {
     private final String modId;
@@ -40,20 +40,6 @@ public abstract class STagProvider<T> extends TagProvider<T> {
     @Override
     public abstract void configure(RegistryWrapper.WrapperLookup lookup);
 
-    public RegistryKey<T> getEntryKey(T entry) {
-        // FIXME
-        Registry<T> registry = (Registry<T>) Registries.REGISTRIES.get(this.registryRef.getValue());
-        if (registry != null) {
-            Optional<RegistryKey<T>> key = registry.getKey(entry);
-
-            if (key.isPresent()) {
-                return key.get();
-            }
-        }
-
-        throw new UnsupportedOperationException("Adding objects is not supported by " + getClass());
-    }
-
     @Override
     public CompletableFuture<?> run(DataWriter writer) {
         record RegistryInfo<T>(RegistryWrapper.WrapperLookup contents, TagProvider.TagLookup<T> parent) {
@@ -67,10 +53,6 @@ public abstract class STagProvider<T> extends TagProvider<T> {
                 .thenCombineAsync(this.parentTagLookupFuture, RegistryInfo::new)
                 .thenCompose(info -> {
                     RegistryWrapper.Impl<T> impl = info.contents.getWrapperOrThrow(this.registryRef);
-                    Predicate<Identifier> predicate = id -> impl.getOptional(RegistryKey.of(this.registryRef, id))
-                            .isPresent();
-                    Predicate<Identifier> predicate2 = id -> this.tagBuilders.containsKey(id) ||
-                            info.parent.contains(TagKey.of(this.registryRef, id));
 
                     return CompletableFuture.allOf(this.tagBuilders.entrySet()
                                     .stream()
@@ -79,8 +61,13 @@ public abstract class STagProvider<T> extends TagProvider<T> {
                                         STagBuilder builder = entry.getValue();
                                         List<TagEntry> entries = builder.build()
                                                 .stream()
-                                                .filter(tagEntry -> !tagEntry.canAdd(predicate, predicate2))
+                                                .filter(tagEntry -> !tagEntry.canAdd(id ->
+                                                                impl.getOptional(RegistryKey.of(this.registryRef, id)).isPresent(),
+                                                        id ->
+                                                                this.tagBuilders.containsKey(id) ||
+                                                                        info.parent.contains(TagKey.of(this.registryRef, id))))
                                                 .toList();
+
                                         if (!entries.isEmpty()) {
                                             throw new IllegalArgumentException(
                                                     String.format(
@@ -110,8 +97,8 @@ public abstract class STagProvider<T> extends TagProvider<T> {
     }
 
     @Override
-    public final String getName() {
-        return StringFormatter.format("Tag Provider by Spark Lib ({}) ({})", this.registryRef.getValue(), this.modId);
+    public String getName() {
+        return StringFormatter.format("Tag Provider by Spark Lib ({})", this.registryRef.getValue());
     }
 
     /**
@@ -166,7 +153,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
         }
 
         public STagBuilder add(T element) {
-            return this.add(STagProvider.this.getEntryKey(element));
+            return this.add(this.getEntryKey(element));
         }
 
         public STagBuilder add(Supplier<T> supplier) {
@@ -176,7 +163,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
         @SafeVarargs
         public final STagBuilder add(T... element) {
             Stream.of(element)
-                    .map(STagProvider.this::getEntryKey)
+                    .map(this::getEntryKey)
                     .forEach(this::add);
             return this;
         }
@@ -185,7 +172,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
         public final STagBuilder add(Supplier<T>... suppliers) {
             Stream.of(suppliers)
                     .map(Supplier::get)
-                    .map(STagProvider.this::getEntryKey)
+                    .map(this::getEntryKey)
                     .forEach(this::add);
             return this;
         }
@@ -230,6 +217,20 @@ public abstract class STagProvider<T> extends TagProvider<T> {
 
             return this;
         }
+
+        private RegistryKey<T> getEntryKey(T entry) {
+            // FIXME
+            Registry<T> registry = (Registry<T>) Registries.REGISTRIES.get(STagProvider.this.registryRef.getValue());
+            if (registry != null) {
+                Optional<RegistryKey<T>> key = registry.getKey(entry);
+
+                if (key.isPresent()) {
+                    return key.get();
+                }
+            }
+
+            throw new UnsupportedOperationException("Adding objects is not supported by " + getClass());
+        }
     }
 
     public static class ForcedTagEntry extends TagEntry {
@@ -248,34 +249,6 @@ public abstract class STagProvider<T> extends TagProvider<T> {
         @Override
         public boolean canAdd(Predicate<Identifier> objectExistsTest, Predicate<Identifier> tagExistsTest) {
             return true;
-        }
-    }
-
-    // Impls
-
-    public static abstract class SItemTagProvider extends STagProvider<Item> {
-        public SItemTagProvider(String modId,
-                                DataOutput output,
-                                CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture) {
-            super(modId, output, RegistryKeys.ITEM, registryLookupFuture);
-        }
-
-        @Override
-        public RegistryKey<Item> getEntryKey(Item entry) {
-            return entry.sparklib$entryKey();
-        }
-    }
-
-    public static abstract class SBlockTagProvider extends STagProvider<Block> {
-        public SBlockTagProvider(String modId,
-                                 DataOutput output,
-                                 CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture) {
-            super(modId, output, RegistryKeys.BLOCK, registryLookupFuture);
-        }
-
-        @Override
-        public RegistryKey<Block> getEntryKey(Block entry) {
-            return entry.sparklib$entryKey();
         }
     }
 }

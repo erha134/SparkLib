@@ -1,10 +1,11 @@
 package io.github.erha134.mc.sparklib.data.provider;
 
-import io.github.erha134.easylib.string.StringFormatter;
+import lombok.Getter;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 
 public abstract class SDataProvider implements DataProvider {
+    @Getter(onMethod_ = {@Override})
     private final String name;
     protected final String modId;
     protected final DataOutput output;
@@ -13,10 +14,5 @@ public abstract class SDataProvider implements DataProvider {
         this.name = name;
         this.modId = modId;
         this.output = output;
-    }
-
-    @Override
-    public final String getName() {
-        return StringFormatter.format(this.name + " ({})", this.modId);
     }
 }

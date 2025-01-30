@@ -53,8 +53,8 @@ public abstract class SRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    public final String getName() {
-        return StringFormatter.format("Recipe Provider by Spark Lib ({})", this.modId);
+    public String getName() {
+        return "Recipe Provider by Spark Lib";
     }
 
     protected Identifier getRecipeIdentifier(Identifier id) {

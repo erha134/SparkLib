@@ -115,7 +115,7 @@ public abstract class SBlockLootTableProvider extends BlockLootTableGenerator im
     }
 
     @Override
-    public final String getName() {
+    public String getName() {
         return StringFormatter.format("Block Loot Table Provider by Spark Lib ({})", this.modId);
     }
 }
