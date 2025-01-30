@@ -45,7 +45,10 @@ public abstract class SLanguageProvider extends SDataProvider {
         JsonObject jsonObject = new JsonObject();
         translations.forEach(jsonObject::addProperty);
         DataProvider.writeToPath(writer, jsonObject, this.generator.getOutput()
-                        .resolve(StringFormatter.format("assets/{}/lang/{}.json", this.modId, this.language)));
+                .resolve("assets")
+                .resolve(this.modId)
+                .resolve("lang")
+                .resolve(this.language + ".json"));
     }
 
     @FunctionalInterface

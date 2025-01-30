@@ -71,7 +71,7 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
                         new TagFile(entries, builder.replace)).getOrThrow(false, LOGGER::error);
                 Path path = this.generator.getOutput()
                         .resolve("data")
-                        .resolve(this.modId)
+                        .resolve(id.getNamespace())
                         .resolve(TagManagerLoader.getPath(this.registry.getKey()))
                         .resolve(id.getPath() + ".json");
 

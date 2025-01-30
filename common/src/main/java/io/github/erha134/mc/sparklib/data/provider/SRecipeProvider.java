@@ -2,7 +2,6 @@ package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
-import io.github.erha134.easylib.string.StringFormatter;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
@@ -39,8 +38,10 @@ public abstract class SRecipeProvider extends RecipeProvider {
             }
 
             Path recipePath = this.generator.getOutput()
-                    .resolve(StringFormatter.format("data/{}/recipes/{}.json", id.getNamespace(), id.getPath()));
-
+                    .resolve("data")
+                    .resolve(id.getNamespace())
+                    .resolve("recipes")
+                    .resolve(id.getPath() + ".json");
             try {
                 DataProvider.writeToPath(writer, provider.toJson(), recipePath);
             } catch (IOException e) {
@@ -49,11 +50,12 @@ public abstract class SRecipeProvider extends RecipeProvider {
 
             JsonObject advancementJson = provider.toAdvancementJson();
             if (advancementJson != null) {
+                Identifier recipeAdvancementId = getRecipeIdentifier(provider.getAdvancementId());
                 Path advancementPath = this.generator.getOutput()
-                        .resolve(StringFormatter.format("data/{}/advancements/{}.json",
-                                getRecipeIdentifier(provider.getAdvancementId()).getNamespace(),
-                                getRecipeIdentifier(provider.getAdvancementId()).getPath()));
-
+                        .resolve("data")
+                        .resolve(recipeAdvancementId.getNamespace())
+                        .resolve("advancements")
+                        .resolve(recipeAdvancementId.getPath() + ".json");
                 try {
                     DataProvider.writeToPath(writer, advancementJson, advancementPath);
                 } catch (IOException e) {

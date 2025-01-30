@@ -2,7 +2,6 @@ package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
-import io.github.erha134.easylib.string.StringFormatter;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -36,9 +35,11 @@ public abstract class SAdvancementProvider extends SDataProvider {
 //            ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 
             DataProvider.writeToPath(writer, advancementJson,
-                    this.generator.getOutput().resolve(StringFormatter.format("data/{}/advancements/{}.json",
-                            advancement.getId().getNamespace(),
-                            advancement.getId().getPath())));
+                    this.generator.getOutput()
+                            .resolve("data")
+                            .resolve(advancement.getId().getNamespace())
+                            .resolve("advancements")
+                            .resolve(advancement.getId().getPath() + ".json"));
         }
     }
 }

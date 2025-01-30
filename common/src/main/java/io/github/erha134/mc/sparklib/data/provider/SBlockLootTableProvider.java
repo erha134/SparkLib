@@ -3,7 +3,6 @@ package io.github.erha134.mc.sparklib.data.provider;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
-import io.github.erha134.easylib.string.StringFormatter;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -99,13 +98,16 @@ public abstract class SBlockLootTableProvider extends BlockLootTableGenerator im
 //            ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 
             // getOutputPath(fabricDataOutput, entry.getKey())
-            DataProvider.writeToPath(writer, tableJson, this.generator.getOutput().resolve(
-                    StringFormatter.format("data/%s/loot_tables/%s.json", entry.getKey().getNamespace(), entry.getKey().getPath())));
+            DataProvider.writeToPath(writer, tableJson, this.generator.getOutput()
+                    .resolve("data")
+                    .resolve(entry.getKey().getNamespace())
+                    .resolve("loot_tables")
+                    .resolve(entry.getKey().getPath() + ".json"));
         }
     }
 
     @Override
     public String getName() {
-        return StringFormatter.format("Block Loot Table Provider by Spark Lib ({})", this.modId);
+        return "Block Loot Table Provider by Spark Lib";
     }
 }

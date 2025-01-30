@@ -3,7 +3,6 @@ package io.github.erha134.mc.sparklib.data.provider;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
-import io.github.erha134.easylib.string.StringFormatter;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;

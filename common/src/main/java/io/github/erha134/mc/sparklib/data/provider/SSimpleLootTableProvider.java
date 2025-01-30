@@ -13,10 +13,7 @@ import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.util.Identifier;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -49,8 +46,11 @@ public abstract class SSimpleLootTableProvider extends SDataProvider implements 
 //            ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 
             // getOutputPath(fabricDataOutput, entry.getKey())
-            DataProvider.writeToPath(writer, tableJson, this.generator.getOutput().resolve(
-                    StringFormatter.format("data/%s/loot_tables/%s.json", entry.getKey().getNamespace(), entry.getKey().getPath())));
+            DataProvider.writeToPath(writer, tableJson, this.generator.getOutput()
+                    .resolve("data")
+                    .resolve(entry.getKey().getNamespace())
+                    .resolve("loot_tables")
+                    .resolve(entry.getKey().getPath() + ".json"));
         }
     }
 }
