@@ -128,7 +128,7 @@ public abstract class SModelProvider extends ModelProvider {
     }
 
     @Override
-    public final String getName() {
-        return StringFormatter.format("Model Provider by Spark Lib ({})", this.modId);
+    public String getName() {
+        return "Model Provider by Spark Lib";
     }
 }

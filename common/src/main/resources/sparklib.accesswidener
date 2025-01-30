@@ -5,7 +5,6 @@ accessible method net/minecraft/screen/ScreenHandler addSlot (Lnet/minecraft/scr
 
 # Tag Provider
 extendable method net/minecraft/data/server/AbstractTagProvider getName ()Ljava/lang/String;
-accessible field net/minecraft/data/server/AbstractTagProvider LOGGER Lorg/slf4j/Logger;
 extendable method net/minecraft/tag/TagEntry <init> (Lnet/minecraft/util/Identifier;ZZ)V
 accessible field net/minecraft/tag/TagEntry id Lnet/minecraft/util/Identifier;
 accessible field net/minecraft/tag/TagEntry required Z

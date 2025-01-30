@@ -1,5 +1,6 @@
 package io.github.erha134.mc.sparklib.item.material;
 
+import lombok.Getter;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.recipe.Ingredient;
@@ -9,12 +10,17 @@ import java.util.function.Supplier;
 
 public class SimpleArmorMaterial implements ArmorMaterial {
     private static final int[] BASE_DURABILITY = new int[]{13, 15, 16, 11};
+    @Getter(onMethod_ = {@Override})
     private final String name;
     private final int durabilityMultiplier;
     private final int[] protectionAmounts;
+    @Getter(onMethod_ = {@Override})
     private final int enchantability;
+    @Getter(onMethod_ = {@Override})
     private final SoundEvent equipSound;
+    @Getter(onMethod_ = {@Override})
     private final float toughness;
+    @Getter(onMethod_ = {@Override})
     private final float knockbackResistance;
     private final Supplier<Ingredient> repairIngredientSupplier;
 
@@ -40,32 +46,7 @@ public class SimpleArmorMaterial implements ArmorMaterial {
     }
 
     @Override
-    public int getEnchantability() {
-        return this.enchantability;
-    }
-
-    @Override
-    public SoundEvent getEquipSound() {
-        return this.equipSound;
-    }
-
-    @Override
     public Ingredient getRepairIngredient() {
         return this.repairIngredientSupplier.get();
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public float getToughness() {
-        return this.toughness;
-    }
-
-    @Override
-    public float getKnockbackResistance() {
-        return this.knockbackResistance;
     }
 }

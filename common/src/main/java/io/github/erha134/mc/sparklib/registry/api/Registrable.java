@@ -12,7 +12,9 @@ public interface Registrable<T> {
         return (RegistryKey<Registry<T>>) sparklib$registry().getKey();
     }
 
-    RegistryEntry.Reference<T> sparklib$entry();
+    default RegistryEntry.Reference<T> sparklib$entry() {
+        return (RegistryEntry.Reference<T>) sparklib$registry().getEntry(sparklib$registry().getRawId((T) this)).orElseThrow();
+    }
 
     default RegistryKey<T> sparklib$entryKey() {
         return sparklib$entry().registryKey();

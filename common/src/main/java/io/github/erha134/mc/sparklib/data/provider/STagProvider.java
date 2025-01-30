@@ -26,6 +26,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.github.erha134.mc.sparklib.data.SDataGeneration.LOGGER;
+
 public abstract class STagProvider<T> extends AbstractTagProvider<T> {
     private final String modId;
     private final DataGenerator generator;
@@ -42,7 +44,7 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
             throw new IllegalArgumentException("Using STagProvider to generate dynamic registry tags is not supported, Use SDynamicRegistryTagProvider instead.");
         }
     }
-
+  
     @Override
     public abstract void configure();
 
@@ -84,7 +86,7 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
 
     @Override
     public final String getName() {
-        return StringFormatter.format("Tag Provider by Spark Lib ({}) ({})", this.registry.getKey().getValue(), this.modId);
+        return StringFormatter.format("Tag Provider by Spark Lib ({})", this.registry.getKey().getValue());
     }
 
     /**
@@ -102,17 +104,15 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
     }
 
     protected STagBuilder getOrCreateSTagBuilder(TagKey<T> tag, boolean replace) {
-        return this.tagBuilders.computeIfAbsent(tag.id(), $ -> new STagBuilder(replace, this.registry));
+        return this.tagBuilders.computeIfAbsent(tag.id(), $ -> new STagBuilder(replace));
     }
 
     protected final class STagBuilder {
         private final List<TagEntry> entries = new ArrayList<>();
         private final boolean replace;
-        private final Registry<T> registry;
 
-        private STagBuilder(boolean replace, Registry<T> registry) {
+        private STagBuilder(boolean replace) {
             this.replace = replace;
-            this.registry = registry;
         }
 
         public List<TagEntry> build() {
@@ -207,7 +207,7 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
         }
 
         private RegistryKey<T> getEntryKey(T element) {
-            return this.registry.getKey(element).orElseThrow();
+            return STagProvider.this.registry.getKey(element).orElseThrow();
         }
     }
 
