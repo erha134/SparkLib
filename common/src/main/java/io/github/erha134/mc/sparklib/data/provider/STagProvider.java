@@ -82,11 +82,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
                                         } else {
                                             JsonElement jsonElement = TagFile.CODEC.encodeStart(JsonOps.INSTANCE,
                                                     new TagFile(entries, builder.replace)).getOrThrow(false, LOGGER::error);
-                                            Path path = this.output.getResolver(DataOutput.OutputType.DATA_PACK,
-                                                            StringFormatter.format("{}/{}",
-                                                                    this.modId,
-                                                                    TagManagerLoader.getPath(this.registryRef)))
-                                                    .resolveJson(identifier);
+                                            Path path = this.pathResolver.resolveJson(identifier);
                                             return DataProvider.writeToPath(writer, jsonElement, path);
                                         }
                                     })
