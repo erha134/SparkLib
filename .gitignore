@@ -5,7 +5,7 @@ run/
 out/
 *.iml
 .gradle/
-output/
+generator/
 bin/
 libs/
 

@@ -1,117 +1,90 @@
 package io.github.erha134.mc.sparklib.data.provider;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.Lifecycle;
 import io.github.erha134.easylib.string.StringFormatter;
 import io.github.erha134.mc.sparklib.registry.api.Registrable;
-import net.minecraft.block.Block;
-import net.minecraft.data.DataOutput;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
-import net.minecraft.data.server.tag.TagProvider;
-import net.minecraft.item.Item;
-import net.minecraft.registry.*;
-import net.minecraft.registry.tag.*;
+import net.minecraft.data.server.AbstractTagProvider;
+import net.minecraft.tag.TagEntry;
+import net.minecraft.tag.TagFile;
+import net.minecraft.tag.TagKey;
+import net.minecraft.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.*;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class STagProvider<T> extends TagProvider<T> {
+public abstract class STagProvider<T> extends AbstractTagProvider<T> {
     private final String modId;
-    private final DataOutput output;
+    private final DataGenerator generator;
     private final Map<Identifier, STagBuilder> tagBuilders = new LinkedHashMap<>();
 
     public STagProvider(String modId,
-                        DataOutput output,
-                        RegistryKey<? extends Registry<T>> registryRef,
-                        CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture) {
-        super(output, registryRef, registryLookupFuture);
+                        DataGenerator generator,
+                        Registry<T> registry) {
+        super(generator, registry);
         this.modId = modId;
-        this.output = output;
+        this.generator = generator;
+
+        if (!(this instanceof STagProvider.SDynamicRegistryTagProvider) && BuiltinRegistries.REGISTRIES.contains((RegistryKey) registry.getKey())) {
+            throw new IllegalArgumentException("Using STagProvider to generate dynamic registry tags is not supported, Use SDynamicRegistryTagProvider instead.");
+        }
     }
 
     @Override
-    public abstract void configure(RegistryWrapper.WrapperLookup lookup);
+    public abstract void configure();
 
-    public RegistryKey<T> getEntryKey(T entry) {
-        // FIXME
-        Registry<T> registry = (Registry<T>) Registries.REGISTRIES.get(this.registryRef.getValue());
-        if (registry != null) {
-            Optional<RegistryKey<T>> key = registry.getKey(entry);
+    @Override
+    public void run(DataWriter writer) {
+        this.tagBuilders.clear();
+        this.configure();
+        this.tagBuilders.forEach((id, builder) -> {
+            List<TagEntry> entries = builder.build()
+                    .stream()
+                    .filter((tag) -> !tag.canAdd(this.registry::containsId, this.tagBuilders::containsKey))
+                    .toList();
+            if (!entries.isEmpty()) {
+                throw new IllegalArgumentException(
+                        String.format(
+                                Locale.ROOT,
+                                "Couldn't define tag %s as it is missing following references: %s",
+                                id,
+                                entries.stream()
+                                        .map(Objects::toString)
+                                        .collect(Collectors.joining(","))));
+            } else {
+                JsonElement jsonElement = TagFile.CODEC.encodeStart(JsonOps.INSTANCE,
+                        new TagFile(entries, builder.replace)).getOrThrow(false, LOGGER::error);
+                Path path = this.generator.getOutput()
+                        .resolve("data")
+                        .resolve(this.modId)
+                        .resolve(TagManagerLoader.getPath(this.registry.getKey()))
+                        .resolve(id.getPath() + ".json");
 
-            if (key.isPresent()) {
-                return key.get();
+                try {
+                    DataProvider.writeToPath(writer, jsonElement, path);
+                } catch (IOException e) {
+                    LOGGER.error("Couldn't save tags to {}", path, e);
+                }
             }
-        }
-
-        throw new UnsupportedOperationException("Adding objects is not supported by " + getClass());
-    }
-
-    @Override
-    public CompletableFuture<?> run(DataWriter writer) {
-        record RegistryInfo<T>(RegistryWrapper.WrapperLookup contents, TagProvider.TagLookup<T> parent) {
-        }
-
-        return this.getRegistryLookupFuture()
-                .thenApply(registryLookupFuture -> {
-                    this.registryLoadFuture.complete(null);
-                    return registryLookupFuture;
-                })
-                .thenCombineAsync(this.parentTagLookupFuture, RegistryInfo::new)
-                .thenCompose(info -> {
-                    RegistryWrapper.Impl<T> impl = info.contents.getWrapperOrThrow(this.registryRef);
-                    Predicate<Identifier> predicate = id -> impl.getOptional(RegistryKey.of(this.registryRef, id))
-                            .isPresent();
-                    Predicate<Identifier> predicate2 = id -> this.tagBuilders.containsKey(id) ||
-                            info.parent.contains(TagKey.of(this.registryRef, id));
-
-                    return CompletableFuture.allOf(this.tagBuilders.entrySet()
-                                    .stream()
-                                    .map(entry -> {
-                                        Identifier identifier = entry.getKey();
-                                        STagBuilder builder = entry.getValue();
-                                        List<TagEntry> entries = builder.build()
-                                                .stream()
-                                                .filter(tagEntry -> !tagEntry.canAdd(predicate, predicate2))
-                                                .toList();
-                                        if (!entries.isEmpty()) {
-                                            throw new IllegalArgumentException(
-                                                    String.format(
-                                                            Locale.ROOT,
-                                                            "Couldn't define tag %s as it is missing following references: %s",
-                                                            identifier,
-                                                            entries.stream()
-                                                                    .map(Objects::toString)
-                                                                    .collect(Collectors.joining(","))
-                                                    )
-                                            );
-                                        } else {
-                                            JsonElement jsonElement = TagFile.CODEC.encodeStart(JsonOps.INSTANCE,
-                                                    new TagFile(entries, builder.replace)).getOrThrow(false, LOGGER::error);
-                                            Path path = this.output.getResolver(DataOutput.OutputType.DATA_PACK,
-                                                            StringFormatter.format("{}/{}",
-                                                                    this.modId,
-                                                                    TagManagerLoader.getPath(this.registryRef)))
-                                                    .resolveJson(identifier);
-                                            return DataProvider.writeToPath(writer, jsonElement, path);
-                                        }
-                                    })
-                                    .toArray(CompletableFuture[]::new)
-                            );
-                        }
-                );
+        });
     }
 
     @Override
     public final String getName() {
-        return StringFormatter.format("Tag Provider by Spark Lib ({}) ({})", this.registryRef.getValue(), this.modId);
+        return StringFormatter.format("Tag Provider by Spark Lib ({}) ({})", this.registry.getKey().getValue(), this.modId);
     }
 
     /**
@@ -120,7 +93,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
      */
     @Deprecated
     @Override
-    protected ProvidedTagBuilder<T> getOrCreateTagBuilder(TagKey<T> tag) {
+    protected ObjectBuilder<T> getOrCreateTagBuilder(TagKey<T> tag) {
         throw new UnsupportedOperationException("because Forge");
     }
 
@@ -129,15 +102,17 @@ public abstract class STagProvider<T> extends TagProvider<T> {
     }
 
     protected STagBuilder getOrCreateSTagBuilder(TagKey<T> tag, boolean replace) {
-        return this.tagBuilders.computeIfAbsent(tag.id(), $ -> new STagBuilder(replace));
+        return this.tagBuilders.computeIfAbsent(tag.id(), $ -> new STagBuilder(replace, this.registry));
     }
 
     protected final class STagBuilder {
         private final List<TagEntry> entries = new ArrayList<>();
         private final boolean replace;
+        private final Registry<T> registry;
 
-        private STagBuilder(boolean replace) {
+        private STagBuilder(boolean replace, Registry<T> registry) {
             this.replace = replace;
+            this.registry = registry;
         }
 
         public List<TagEntry> build() {
@@ -166,7 +141,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
         }
 
         public STagBuilder add(T element) {
-            return this.add(STagProvider.this.getEntryKey(element));
+            return this.add(this.getEntryKey(element));
         }
 
         public STagBuilder add(Supplier<T> supplier) {
@@ -176,7 +151,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
         @SafeVarargs
         public final STagBuilder add(T... element) {
             Stream.of(element)
-                    .map(STagProvider.this::getEntryKey)
+                    .map(this::getEntryKey)
                     .forEach(this::add);
             return this;
         }
@@ -185,7 +160,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
         public final STagBuilder add(Supplier<T>... suppliers) {
             Stream.of(suppliers)
                     .map(Supplier::get)
-                    .map(STagProvider.this::getEntryKey)
+                    .map(this::getEntryKey)
                     .forEach(this::add);
             return this;
         }
@@ -230,6 +205,10 @@ public abstract class STagProvider<T> extends TagProvider<T> {
 
             return this;
         }
+
+        private RegistryKey<T> getEntryKey(T element) {
+            return this.registry.getKey(element).orElseThrow();
+        }
     }
 
     public static class ForcedTagEntry extends TagEntry {
@@ -253,29 +232,15 @@ public abstract class STagProvider<T> extends TagProvider<T> {
 
     // Impls
 
-    public static abstract class SItemTagProvider extends STagProvider<Item> {
-        public SItemTagProvider(String modId,
-                                DataOutput output,
-                                CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture) {
-            super(modId, output, RegistryKeys.ITEM, registryLookupFuture);
-        }
-
-        @Override
-        public RegistryKey<Item> getEntryKey(Item entry) {
-            return entry.sparklib$entryKey();
-        }
-    }
-
-    public static abstract class SBlockTagProvider extends STagProvider<Block> {
-        public SBlockTagProvider(String modId,
-                                 DataOutput output,
-                                 CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture) {
-            super(modId, output, RegistryKeys.BLOCK, registryLookupFuture);
-        }
-
-        @Override
-        public RegistryKey<Block> getEntryKey(Block entry) {
-            return entry.sparklib$entryKey();
+    public abstract static class SDynamicRegistryTagProvider<T> extends STagProvider<T> {
+        protected SDynamicRegistryTagProvider(String modId, DataGenerator generator, RegistryKey<? extends Registry<T>> registryKey) {
+            super(modId, generator, new SimpleRegistry<>(registryKey, Lifecycle.experimental(), null) {
+                @Override
+                public boolean containsId(Identifier id) {
+                    return true;
+                }
+            });
+            Preconditions.checkArgument(DynamicRegistryManager.INFOS.containsKey(registryKey), "Only dynamic registries are supported in this tag provider.");
         }
     }
 }
