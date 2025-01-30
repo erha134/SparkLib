@@ -17,13 +17,17 @@ public class SDataGeneration {
     private final List<SDataProviderFactory<?>> providerFactories = new ArrayList<>();
     private final List<SDataRegistryDependentProviderFactory<?>> registryDependentProviderFactories = new ArrayList<>();
 
-    private SDataGeneration(String modId, DataGenerator.Pack pack, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    private SDataGeneration(String modId,
+                            DataGenerator.Pack pack,
+                            CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         this.modId = modId;
         this.pack = pack;
         this.registriesFuture = registriesFuture;
     }
 
-    public SDataGeneration(String modId, DataGenerator generator, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public SDataGeneration(String modId,
+                           DataGenerator generator,
+                           CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         this(modId, generator.createVanillaSubPack(true, modId), registriesFuture);
     }
 

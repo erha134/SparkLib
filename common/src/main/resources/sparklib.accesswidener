@@ -3,10 +3,11 @@ accessWidener   v2  named
 # Screen Handler
 accessible method net/minecraft/screen/ScreenHandler addSlot (Lnet/minecraft/screen/slot/Slot;)Lnet/minecraft/screen/slot/Slot;
 
-# TagProvider
+# Tag Provider
+extendable method net/minecraft/data/server/tag/TagProvider getName ()Ljava/lang/String;
 accessible field net/minecraft/data/server/tag/TagProvider registryLoadFuture Ljava/util/concurrent/CompletableFuture;
 accessible field net/minecraft/data/server/tag/TagProvider parentTagLookupFuture Ljava/util/concurrent/CompletableFuture;
-accessible field net/minecraft/data/server/tag/TagProvider tagBuilders Ljava/util/Map;
+# accessible field net/minecraft/data/server/tag/TagProvider tagBuilders Ljava/util/Map;
 accessible field net/minecraft/data/server/tag/TagProvider LOGGER Lorg/slf4j/Logger;
 accessible field net/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder builder Lnet/minecraft/registry/tag/TagBuilder;
 extendable method net/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder add (Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder;
@@ -14,3 +15,13 @@ extendable method net/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder a
 extendable method net/minecraft/registry/tag/TagEntry <init> (Lnet/minecraft/util/Identifier;ZZ)V
 accessible field net/minecraft/registry/tag/TagEntry id Lnet/minecraft/util/Identifier;
 accessible field net/minecraft/registry/tag/TagEntry required Z
+
+# Recipe Provider
+extendable method net/minecraft/data/server/recipe/RecipeProvider getName ()Ljava/lang/String;
+accessible field net/minecraft/data/server/recipe/RecipeProvider recipesPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
+accessible field net/minecraft/data/server/recipe/RecipeProvider advancementsPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
+
+# Model Provider
+extendable method net/minecraft/data/client/ModelProvider getName ()Ljava/lang/String;
+accessible field net/minecraft/data/client/ModelProvider blockstatesPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
+accessible field net/minecraft/data/client/ModelProvider modelsPathResolver Lnet/minecraft/data/DataOutput$PathResolver;

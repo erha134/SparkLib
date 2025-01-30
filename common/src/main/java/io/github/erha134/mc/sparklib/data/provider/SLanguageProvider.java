@@ -1,6 +1,7 @@
 package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.gson.JsonObject;
+import io.github.erha134.easylib.string.StringFormatter;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
@@ -22,14 +23,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class SLanguageProvider implements DataProvider {
-    private final String modId;
-    private final DataOutput output;
+public abstract class SLanguageProvider extends SDataProvider {
     private final String language;
 
     public SLanguageProvider(String modId, DataOutput output, String language) {
-        this.modId = modId;
-        this.output = output;
+        super(StringFormatter.format("Language Provider by Spark Lib ({})", language), modId, output);
         this.language = language;
     }
 
@@ -53,11 +51,6 @@ public abstract class SLanguageProvider implements DataProvider {
                 this.output.getResolver(DataOutput.OutputType.RESOURCE_PACK,
                         "lang")
                         .resolveJson(new Identifier(this.modId, this.language)));
-    }
-
-    @Override
-    public String getName() {
-        return "Language Provider (Spark Lib)";
     }
 
     @FunctionalInterface

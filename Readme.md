@@ -8,7 +8,7 @@ Wiki is coming soon.
 
 | Minecraft version | Latest version | Fabric support | Forge support | NeoForge support | Git branch | Maintaining status |
 |-------------------|----------------|----------------|---------------|------------------|------------|--------------------|
-| 1.20-1.20.1       | 1.0.0-beta.4   | ✅              | ✅             | ❌                | 1.20       | ✅                  |
+| 1.20-1.20.1       | 1.0.0          | ✅              | ✅             | ❌                | 1.20       | ✅                  |
 
 ## Dependencies
 
@@ -35,12 +35,16 @@ Wiki is coming soon.
   - [ ] In-game config screens
 - [x] Version checker
 - [ ] Annotation-driven register
-- [x] Data Generation API
+- [x] Data Generation API (by `SDataGeneration`)
+  - [x] Custom Data Providers (Based on [Fabric Data Generation Api](https://github.com/FabricMC/fabric/tree/1.20.1/fabric-data-generation-api-v1), under Apache-2.0 License)
 
 ### Low Priority
 
 - [ ] Bucket with Mob
 - [ ] Fluid API
+
+### No Plan
+
 - [ ] Energy API
 - [ ] Transfer API
 

@@ -15,10 +15,7 @@ import net.minecraft.registry.tag.*;
 import net.minecraft.util.Identifier;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -29,6 +26,7 @@ import java.util.stream.Stream;
 public abstract class STagProvider<T> extends TagProvider<T> {
     private final String modId;
     private final DataOutput output;
+    private final Map<Identifier, STagBuilder> tagBuilders = new LinkedHashMap<>();
 
     public STagProvider(String modId,
                         DataOutput output,
@@ -69,28 +67,38 @@ public abstract class STagProvider<T> extends TagProvider<T> {
                 .thenCombineAsync(this.parentTagLookupFuture, RegistryInfo::new)
                 .thenCompose(info -> {
                     RegistryWrapper.Impl<T> impl = info.contents.getWrapperOrThrow(this.registryRef);
-                    Predicate<Identifier> predicate = id -> impl.getOptional(RegistryKey.of(this.registryRef, id)).isPresent();
-                    Predicate<Identifier> predicate2 = id -> this.tagBuilders.containsKey(id) || info.parent.contains(TagKey.of(this.registryRef, id));
+                    Predicate<Identifier> predicate = id -> impl.getOptional(RegistryKey.of(this.registryRef, id))
+                            .isPresent();
+                    Predicate<Identifier> predicate2 = id -> this.tagBuilders.containsKey(id) ||
+                            info.parent.contains(TagKey.of(this.registryRef, id));
+
                     return CompletableFuture.allOf(this.tagBuilders.entrySet()
                                     .stream()
                                     .map(entry -> {
                                         Identifier identifier = entry.getKey();
-                                        TagBuilder tagBuilder = entry.getValue();
-                                        List<TagEntry> list = tagBuilder.build();
-                                        List<TagEntry> list2 = list.stream().filter(tagEntry -> !tagEntry.canAdd(predicate, predicate2)).toList();
-                                        if (!list2.isEmpty()) {
+                                        STagBuilder builder = entry.getValue();
+                                        List<TagEntry> entries = builder.build()
+                                                .stream()
+                                                .filter(tagEntry -> !tagEntry.canAdd(predicate, predicate2))
+                                                .toList();
+                                        if (!entries.isEmpty()) {
                                             throw new IllegalArgumentException(
                                                     String.format(
                                                             Locale.ROOT,
                                                             "Couldn't define tag %s as it is missing following references: %s",
                                                             identifier,
-                                                            list2.stream().map(Objects::toString).collect(Collectors.joining(","))
+                                                            entries.stream()
+                                                                    .map(Objects::toString)
+                                                                    .collect(Collectors.joining(","))
                                                     )
                                             );
                                         } else {
-                                            JsonElement jsonElement = TagFile.CODEC.encodeStart(JsonOps.INSTANCE, new TagFile(list, false)).getOrThrow(false, LOGGER::error);
+                                            JsonElement jsonElement = TagFile.CODEC.encodeStart(JsonOps.INSTANCE,
+                                                    new TagFile(entries, builder.replace)).getOrThrow(false, LOGGER::error);
                                             Path path = this.output.getResolver(DataOutput.OutputType.DATA_PACK,
-                                                            StringFormatter.format("{}/{}", this.modId, TagManagerLoader.getPath(this.registryRef)))
+                                                            StringFormatter.format("{}/{}",
+                                                                    this.modId,
+                                                                    TagManagerLoader.getPath(this.registryRef)))
                                                     .resolveJson(identifier);
                                             return DataProvider.writeToPath(writer, jsonElement, path);
                                         }
@@ -101,8 +109,13 @@ public abstract class STagProvider<T> extends TagProvider<T> {
                 );
     }
 
+    @Override
+    public final String getName() {
+        return StringFormatter.format("Tag Provider by Spark Lib ({}) ({})", this.registryRef.getValue(), this.modId);
+    }
+
     /**
-     * 请使用 {@link #getOrCreateCustomTagBuilder(TagKey)}。
+     * 请使用 {@link #getOrCreateSTagBuilder(TagKey)} 和 {@link #getOrCreateSTagBuilder(TagKey, boolean)}。
      * @deprecated
      */
     @Deprecated
@@ -111,31 +124,57 @@ public abstract class STagProvider<T> extends TagProvider<T> {
         throw new UnsupportedOperationException("because Forge");
     }
 
-    protected SProvidedTagBuilder getOrCreateCustomTagBuilder(TagKey<T> tag) {
-        return new SProvidedTagBuilder(super.getOrCreateTagBuilder(tag));
+    protected STagBuilder getOrCreateSTagBuilder(TagKey<T> tag) {
+        return this.getOrCreateSTagBuilder(tag, false);
     }
 
-    protected final class SProvidedTagBuilder {
-        private final TagProvider.ProvidedTagBuilder<T> parent;
-        private final TagBuilder builder;
+    protected STagBuilder getOrCreateSTagBuilder(TagKey<T> tag, boolean replace) {
+        return this.tagBuilders.computeIfAbsent(tag.id(), $ -> new STagBuilder(replace));
+    }
 
-        private SProvidedTagBuilder(ProvidedTagBuilder<T> parent) {
-            this.parent = parent;
-            this.builder = parent.builder;
+    protected final class STagBuilder {
+        private final List<TagEntry> entries = new ArrayList<>();
+        private final boolean replace;
+
+        private STagBuilder(boolean replace) {
+            this.replace = replace;
         }
 
-        public SProvidedTagBuilder add(T element) {
-            this.add(STagProvider.this.getEntryKey(element));
+        public List<TagEntry> build() {
+            return List.copyOf(this.entries);
+        }
+
+        public STagBuilder add(TagEntry entry) {
+            this.entries.add(entry);
             return this;
         }
 
-        public SProvidedTagBuilder add(Supplier<T> supplier) {
-            this.add(supplier.get());
-            return this;
+        public STagBuilder add(Identifier id) {
+            return this.add(TagEntry.create(id));
+        }
+
+        public STagBuilder addOptional(Identifier id) {
+            return this.add(TagEntry.createOptional(id));
+        }
+
+        public STagBuilder addTag(Identifier id) {
+            return this.add(TagEntry.createTag(id));
+        }
+
+        public STagBuilder addOptionalTag(Identifier id) {
+            return this.add(TagEntry.createOptionalTag(id));
+        }
+
+        public STagBuilder add(T element) {
+            return this.add(STagProvider.this.getEntryKey(element));
+        }
+
+        public STagBuilder add(Supplier<T> supplier) {
+            return this.add(supplier.get());
         }
 
         @SafeVarargs
-        public final SProvidedTagBuilder add(T... element) {
+        public final STagBuilder add(T... element) {
             Stream.of(element)
                     .map(STagProvider.this::getEntryKey)
                     .forEach(this::add);
@@ -143,7 +182,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
         }
 
         @SafeVarargs
-        public final SProvidedTagBuilder add(Supplier<T>... suppliers) {
+        public final STagBuilder add(Supplier<T>... suppliers) {
             Stream.of(suppliers)
                     .map(Supplier::get)
                     .map(STagProvider.this::getEntryKey)
@@ -151,50 +190,31 @@ public abstract class STagProvider<T> extends TagProvider<T> {
             return this;
         }
 
-        public SProvidedTagBuilder add(Registrable<T> registrable) {
-            this.add(registrable.sparklib$entryKey());
-            return this;
+        public STagBuilder add(Registrable<T> registrable) {
+            return this.add(registrable.sparklib$entryKey());
         }
 
-        public SProvidedTagBuilder add(RegistryKey<T> key) {
-            this.builder.add(key.getValue());
-            return this;
+        public STagBuilder add(RegistryKey<T> key) {
+            return this.add(key.getValue());
         }
 
-        public SProvidedTagBuilder add(Identifier id) {
-            builder.add(id);
-            return this;
-        }
-
-        public SProvidedTagBuilder addOptional(Identifier id) {
-            this.builder.addOptional(id);
-            return this;
-        }
-
-        public SProvidedTagBuilder addOptional(RegistryKey<? extends T> registryKey) {
+        public STagBuilder addOptional(RegistryKey<? extends T> registryKey) {
             return addOptional(registryKey.getValue());
         }
 
-        public SProvidedTagBuilder addTag(TagKey<T> identifiedTag) {
-            this.builder.addTag(identifiedTag.id());
-            return this;
+        public STagBuilder addTag(TagKey<T> identifiedTag) {
+            return this.addTag(identifiedTag.id());
         }
 
-        public SProvidedTagBuilder addOptionalTag(Identifier id) {
-            this.parent.addOptionalTag(id);
-            return this;
+        public STagBuilder addOptionalTag(TagKey<T> tag) {
+            return this.addOptionalTag(tag.id());
         }
 
-        public SProvidedTagBuilder addOptionalTag(TagKey<T> tag) {
-            return addOptionalTag(tag.id());
+        public STagBuilder forceAddTag(TagKey<T> tag) {
+            return this.add(new ForcedTagEntry(TagEntry.create(tag.id())));
         }
 
-        public SProvidedTagBuilder forceAddTag(TagKey<T> tag) {
-            builder.add(new ForcedTagEntry(TagEntry.create(tag.id())));
-            return this;
-        }
-
-        public SProvidedTagBuilder add(Identifier... ids) {
+        public STagBuilder add(Identifier... ids) {
             for (Identifier id : ids) {
                 add(id);
             }
@@ -203,7 +223,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
         }
 
         @SafeVarargs
-        public final SProvidedTagBuilder add(RegistryKey<T>... registryKeys) {
+        public final STagBuilder add(RegistryKey<T>... registryKeys) {
             for (RegistryKey<T> registryKey : registryKeys) {
                 add(registryKey);
             }
