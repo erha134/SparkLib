@@ -222,11 +222,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
             // FIXME
             Registry<T> registry = (Registry<T>) Registries.REGISTRIES.get(STagProvider.this.registryRef.getValue());
             if (registry != null) {
-                Optional<RegistryKey<T>> key = registry.getKey(entry);
-
-                if (key.isPresent()) {
-                    return key.get();
-                }
+                return registry.getKey(entry).orElseThrow();
             }
 
             throw new UnsupportedOperationException("Adding objects is not supported by " + getClass());
