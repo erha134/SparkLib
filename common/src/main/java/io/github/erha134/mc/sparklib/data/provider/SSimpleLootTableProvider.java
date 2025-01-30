@@ -3,33 +3,35 @@ package io.github.erha134.mc.sparklib.data.provider;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import io.github.erha134.easylib.string.StringFormatter;
-import net.minecraft.data.DataOutput;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
-import net.minecraft.data.server.loottable.LootTableGenerator;
-import net.minecraft.loot.LootDataType;
+import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.util.Identifier;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public abstract class SSimpleLootTableProvider extends SDataProvider implements LootTableGenerator, DataProvider {
+public abstract class SSimpleLootTableProvider extends SDataProvider implements Consumer<BiConsumer<Identifier, LootTable.Builder>>, DataProvider {
     private final LootContextType lootContextType;
 
-    public SSimpleLootTableProvider(String modId, DataOutput output, LootContextType lootContextType) {
+    public SSimpleLootTableProvider(String modId, DataGenerator generator, LootContextType lootContextType) {
         super(StringFormatter.format("{} Loot Table Provider by Spark Lib", LootContextTypes.getId(lootContextType)),
                 modId,
-                output);
+                generator);
         this.lootContextType = lootContextType;
     }
 
     @Override
-    public CompletableFuture<?> run(DataWriter writer) {
+    public void run(DataWriter writer) throws IOException {
         Map<Identifier, LootTable> builders = Maps.newHashMap();
 //        Map<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
 
@@ -42,20 +44,13 @@ public abstract class SSimpleLootTableProvider extends SDataProvider implements 
             }
         });
 
-        final List<CompletableFuture<?>> futures = new ArrayList<>();
-
         for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
-            JsonObject tableJson = (JsonObject) LootDataType.LOOT_TABLES.getGson().toJsonTree(entry.getValue());
+            JsonObject tableJson = (JsonObject) LootManager.toJson(entry.getValue());
 //            ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 
             // getOutputPath(fabricDataOutput, entry.getKey())
-            futures.add(DataProvider.writeToPath(writer,
-                    tableJson,
-                    this.output.getResolver(DataOutput.OutputType.DATA_PACK,
-                                    "loot_tables")
-                            .resolveJson(entry.getKey())));
+            DataProvider.writeToPath(writer, tableJson, this.generator.getOutput().resolve(
+                    StringFormatter.format("data/%s/loot_tables/%s.json", entry.getKey().getNamespace(), entry.getKey().getPath())));
         }
-
-        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 }

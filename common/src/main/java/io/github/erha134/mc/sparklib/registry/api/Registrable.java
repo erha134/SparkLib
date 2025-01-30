@@ -1,9 +1,9 @@
 package io.github.erha134.mc.sparklib.registry.api;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryKey;
 
 public interface Registrable<T> {
     Registry<T> sparklib$registry();
