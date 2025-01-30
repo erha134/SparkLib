@@ -1,55 +1,34 @@
 package io.github.erha134.mc.sparklib.data;
 
 import io.github.erha134.mc.sparklib.data.factory.SDataProviderFactory;
-import io.github.erha134.mc.sparklib.data.factory.SDataRegistryDependentProviderFactory;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.registry.RegistryWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class SDataGeneration {
     public static final Logger LOGGER = LoggerFactory.getLogger(SDataGeneration.class);
 
     private final String modId;
-    private final DataGenerator.Pack pack;
-    private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;
+    private final DataGenerator generator;
     private final List<SDataProviderFactory<?>> providerFactories = new ArrayList<>();
-    private final List<SDataRegistryDependentProviderFactory<?>> registryDependentProviderFactories = new ArrayList<>();
-
-    private SDataGeneration(String modId,
-                            DataGenerator.Pack pack,
-                            CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-        this.modId = modId;
-        this.pack = pack;
-        this.registriesFuture = registriesFuture;
-    }
 
     public SDataGeneration(String modId,
-                           DataGenerator generator,
-                           CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-        this(modId, generator.createVanillaSubPack(true, modId), registriesFuture);
+                           DataGenerator generator) {
+        this.modId = modId;
+        this.generator = generator;
     }
 
     public <T extends DataProvider> void addProvider(SDataProviderFactory<T> factory) {
         this.providerFactories.add(factory);
     }
 
-    public <T extends DataProvider> void addProvider(SDataRegistryDependentProviderFactory<T> factory) {
-        this.registryDependentProviderFactories.add(factory);
-    }
-
     public void run() {
         this.providerFactories.forEach(f -> {
-            this.pack.addProvider(output -> f.create(this.modId, output));
-        });
-
-        this.registryDependentProviderFactories.forEach(f -> {
-            this.pack.addProvider(output -> f.create(this.modId, output, this.registriesFuture));
+            this.generator.addProvider(true, f.create(this.modId, this.generator));
         });
     }
 }

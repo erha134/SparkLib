@@ -5,6 +5,6 @@ import net.minecraftforge.data.event.GatherDataEvent;
 
 public class SDataGenerationForge {
     public static SDataGeneration create(String modId, GatherDataEvent e) {
-        return new SDataGeneration(modId, e.getGenerator(), e.getLookupProvider());
+        return new SDataGeneration(modId, e.getGenerator());
     }
 }

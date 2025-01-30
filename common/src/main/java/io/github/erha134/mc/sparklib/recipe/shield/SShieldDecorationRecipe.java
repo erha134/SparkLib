@@ -3,7 +3,7 @@ package io.github.erha134.mc.sparklib.recipe.shield;
 import io.github.erha134.mc.sparklib.item.shield.SShieldItem;
 import io.github.erha134.mc.sparklib.recipe.SRecipeSerializers;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.inventory.RecipeInputInventory;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BannerItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -11,23 +11,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShieldDecorationRecipe;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 public class SShieldDecorationRecipe extends ShieldDecorationRecipe {
-    public SShieldDecorationRecipe(Identifier identifier, CraftingRecipeCategory craftingRecipeCategory) {
-        super(identifier, craftingRecipeCategory);
+    public SShieldDecorationRecipe(Identifier identifier) {
+        super(identifier);
     }
 
     @Override
-    public boolean matches(RecipeInputInventory recipeInputInventory, World world) {
+    public boolean matches(CraftingInventory craftingInventory, World world) {
         ItemStack shield = ItemStack.EMPTY;
         ItemStack banner = ItemStack.EMPTY;
 
-        for (int i = 0; i < recipeInputInventory.size(); ++i) {
-            ItemStack stack = recipeInputInventory.getStack(i);
+        for (int i = 0; i < craftingInventory.size(); ++i) {
+            ItemStack stack = craftingInventory.getStack(i);
 
             if (!stack.isEmpty()) {
                 Item item = stack.getItem();
@@ -60,12 +58,12 @@ public class SShieldDecorationRecipe extends ShieldDecorationRecipe {
     }
 
     @Override
-    public ItemStack craft(RecipeInputInventory recipeInputInventory, DynamicRegistryManager dynamicRegistryManager) {
+    public ItemStack craft(CraftingInventory craftingInventory) {
         ItemStack banner = ItemStack.EMPTY;
         ItemStack shield = ItemStack.EMPTY;
 
-        for (int i = 0; i < recipeInputInventory.size(); ++i) {
-            ItemStack stack = recipeInputInventory.getStack(i);
+        for (int i = 0; i < craftingInventory.size(); ++i) {
+            ItemStack stack = craftingInventory.getStack(i);
 
             if (!stack.isEmpty()) {
                 if (stack.getItem() instanceof BannerItem) {

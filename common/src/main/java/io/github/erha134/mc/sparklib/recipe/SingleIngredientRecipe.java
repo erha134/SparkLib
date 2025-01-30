@@ -5,7 +5,6 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.*;
-import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.world.World;
@@ -34,8 +33,9 @@ public class SingleIngredientRecipe<R extends SingleIngredientRecipe<R>> impleme
         return this.id;
     }
 
+
     @Override
-    public ItemStack getOutput(DynamicRegistryManager registryManager) {
+    public ItemStack getOutput() {
         return this.output.copy();
     }
 
@@ -49,7 +49,7 @@ public class SingleIngredientRecipe<R extends SingleIngredientRecipe<R>> impleme
     }
 
     @Override
-    public ItemStack craft(SimpleInventory inventory, DynamicRegistryManager registryManager) {
+    public ItemStack craft(SimpleInventory inventory) {
         return this.output;
     }
 
@@ -78,7 +78,7 @@ public class SingleIngredientRecipe<R extends SingleIngredientRecipe<R>> impleme
         @Override
         public R read(Identifier id, JsonObject json) {
             Ingredient input = Ingredient.fromJson(JsonHelper.getObject(json, "input"));
-            ItemStack output = ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "output"));
+            ItemStack output = ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "generator"));
             return this.factory.create(id, input, output);
         }
 
