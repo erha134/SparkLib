@@ -3,7 +3,6 @@ package io.github.erha134.mc.sparklib.data.provider;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
-import io.github.erha134.easylib.string.StringFormatter;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
@@ -38,7 +37,6 @@ public abstract class SModelProvider extends ModelProvider {
 
     public abstract void generateItemModels(ItemModelGenerator itemModelGenerator);
 
-    // TODO: Skip over blocks and items that are not from the mod we are processing.
     @Override
     public CompletableFuture<?> run(DataWriter writer) {
         Map<Block, BlockStateSupplier> blockMap = Maps.newHashMap();
@@ -48,6 +46,14 @@ public abstract class SModelProvider extends ModelProvider {
         // Block State Model Generate
         BlockStateModelGenerator blockStateModelGenerator = new BlockStateModelGenerator(bsSupplier -> {
             Block block = bsSupplier.getBlock();
+
+            if (this.validation) {
+                // Skip over blocks and items that are not from the mod we are processing.
+                if (!Registries.BLOCK.getId(block).getNamespace().equals(this.modId)) {
+                    return;
+                }
+            }
+
             BlockStateSupplier blockStateSupplier2 = blockMap.put(block, bsSupplier);
             if (blockStateSupplier2 != null) {
                 throw new IllegalStateException("Duplicate blockstate definition for " + block);
@@ -82,6 +88,16 @@ public abstract class SModelProvider extends ModelProvider {
                 Item item = Item.BLOCK_ITEMS.get(block);
                 if (item != null) {
                     if (items.contains(item)) {
+                        return;
+                    }
+
+                    // Only generate the item model if the block state json was registered
+                    if (!blockMap.containsKey(block)) {
+                        return;
+                    }
+
+                    if (!Registries.ITEM.getId(item).getNamespace().equals(this.modId)) {
+                        // Skip over any items from other mods.
                         return;
                     }
 

@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import io.github.erha134.easylib.string.StringFormatter;
 import io.github.erha134.mc.sparklib.registry.api.Registrable;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
@@ -21,8 +22,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.github.erha134.mc.sparklib.data.SDataGeneration.LOGGER;
-
+@Slf4j
 public abstract class STagProvider<T> extends TagProvider<T> {
     private final String modId;
     private final DataOutput output;
@@ -81,7 +81,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
                                             );
                                         } else {
                                             JsonElement jsonElement = TagFile.CODEC.encodeStart(JsonOps.INSTANCE,
-                                                    new TagFile(entries, builder.replace)).getOrThrow(false, LOGGER::error);
+                                                    new TagFile(entries, builder.replace)).getOrThrow(false, log::error);
                                             Path path = this.pathResolver.resolveJson(identifier);
                                             return DataProvider.writeToPath(writer, jsonElement, path);
                                         }

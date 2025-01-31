@@ -2,7 +2,6 @@ package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
-import io.github.erha134.easylib.string.StringFormatter;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
