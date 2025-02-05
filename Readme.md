@@ -30,18 +30,19 @@ Wiki is coming soon.
 
 ## Todos
 
-### High Priority
+### Done
 
-- [ ] Config API
-  - [ ] Config serializer and deserializer
-    - [ ] TOML
-    - [ ] JSON
-    - [ ] YAML
-  - [ ] In-game config screens
 - [x] Version checker
-- [ ] Annotation-driven register
 - [x] Data Generation API (by `SDataGeneration`)
   - [x] Custom Data Providers (Based on [Fabric Data Generation Api](https://github.com/FabricMC/fabric/tree/1.20.1/fabric-data-generation-api-v1), under Apache-2.0 License)
+
+### High Priority
+
+- [x] Config API (by [Spark Config](https://github.com/erha134/SparkConfig))
+  - [ ] In-game config screens
+- [ ] Lookup API
+- [ ] Energy API
+- [ ] Transfer API
 
 ### Low Priority
 
@@ -50,8 +51,7 @@ Wiki is coming soon.
 
 ### No Plan
 
-- [ ] Energy API
-- [ ] Transfer API
+- [ ] Annotation-driven register
 
 ## Maven
 
