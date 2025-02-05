@@ -27,6 +27,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 public abstract class STagProvider<T> extends AbstractTagProvider<T> {
     private final String modId;
     private final DataGenerator generator;

@@ -51,7 +51,7 @@ public abstract class SModelProvider extends ModelProvider {
 
             if (this.validation) {
                 // Skip over blocks and items that are not from the mod we are processing.
-                if (!Registries.BLOCK.getId(block).getNamespace().equals(this.modId)) {
+                if (!Registry.BLOCK.getId(block).getNamespace().equals(this.modId)) {
                     return;
                 }
             }
@@ -98,7 +98,7 @@ public abstract class SModelProvider extends ModelProvider {
                         return;
                     }
 
-                    if (!Registries.ITEM.getId(item).getNamespace().equals(this.modId)) {
+                    if (!Registry.ITEM.getId(item).getNamespace().equals(this.modId)) {
                         // Skip over any items from other mods.
                         return;
                     }
