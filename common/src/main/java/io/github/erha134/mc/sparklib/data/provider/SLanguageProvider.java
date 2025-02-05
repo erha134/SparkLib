@@ -2,7 +2,7 @@ package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.gson.JsonObject;
 import io.github.erha134.easylib.string.StringFormatter;
-import io.github.erha134.mc.sparklib.data.SDataGeneration;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 public abstract class SLanguageProvider extends SDataProvider {
     private final String language;
 
@@ -97,7 +98,7 @@ public abstract class SLanguageProvider extends SDataProvider {
             Identifier id = Registries.STAT_TYPE.getId(statType);
 
             if (id == null) {
-                SDataGeneration.LOGGER.error("No identifier for stat type: {}", statType.getName().getString());
+                log.error("No identifier for stat type: {}", statType.getName().getString());
                 return;
             }
 

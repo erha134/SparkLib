@@ -7,6 +7,6 @@ import net.minecraft.registry.RegistryWrapper;
 import java.util.concurrent.CompletableFuture;
 
 @FunctionalInterface
-public interface SDataRegistryDependentProviderFactory<T extends DataProvider> {
+public interface SRegistryDependentDataProviderFactory<T extends DataProvider> {
     T create(String modId, DataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture);
 }

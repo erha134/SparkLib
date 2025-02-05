@@ -1,25 +1,21 @@
 package io.github.erha134.mc.sparklib.data;
 
 import io.github.erha134.mc.sparklib.data.factory.SDataProviderFactory;
-import io.github.erha134.mc.sparklib.data.factory.SDataRegistryDependentProviderFactory;
+import io.github.erha134.mc.sparklib.data.factory.SRegistryDependentDataProviderFactory;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.registry.RegistryWrapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class SDataGeneration {
-    public static final Logger LOGGER = LoggerFactory.getLogger(SDataGeneration.class);
-
     private final String modId;
     private final DataGenerator.Pack pack;
     private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;
     private final List<SDataProviderFactory<?>> providerFactories = new ArrayList<>();
-    private final List<SDataRegistryDependentProviderFactory<?>> registryDependentProviderFactories = new ArrayList<>();
+    private final List<SRegistryDependentDataProviderFactory<?>> registryDependentProviderFactories = new ArrayList<>();
 
     private SDataGeneration(String modId,
                             DataGenerator.Pack pack,
@@ -39,7 +35,7 @@ public class SDataGeneration {
         this.providerFactories.add(factory);
     }
 
-    public <T extends DataProvider> void addProvider(SDataRegistryDependentProviderFactory<T> factory) {
+    public <T extends DataProvider> void addProvider(SRegistryDependentDataProviderFactory<T> factory) {
         this.registryDependentProviderFactories.add(factory);
     }
 
