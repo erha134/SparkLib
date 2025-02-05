@@ -2,6 +2,7 @@ package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.gson.JsonObject;
 import io.github.erha134.easylib.string.StringFormatter;
+import io.github.erha134.mc.sparklib.data.SDataGeneration;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
@@ -93,7 +94,14 @@ public abstract class SLanguageProvider extends SDataProvider {
         }
 
         default void add(StatType<?> statType, String value) {
-            add(statType.getTranslationKey(), value);
+            Identifier id = Registries.STAT_TYPE.getId(statType);
+
+            if (id == null) {
+                SDataGeneration.LOGGER.error("No identifier for stat type: {}", statType.getName().getString());
+                return;
+            }
+
+            add(id.toString().replace(':', '.'), value);
         }
 
         default void add(StatusEffect statusEffect, String value) {

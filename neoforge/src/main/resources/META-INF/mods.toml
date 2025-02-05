@@ -1,0 +1,40 @@
+modLoader = "javafml"
+loaderVersion = "[1, )"
+issueTrackerURL = "${issues_page}"
+license = "${license}"
+
+[[mods]]
+modId = "${id}"
+version = "${version}"
+displayName = "${name}"
+authors = "Block_Mrlimr267 (erha134)"
+credits = ""
+displayURL = "${home_page}"
+description = '''
+${description}
+'''
+logoFile = "icon.png"
+
+[[dependencies."${id}"]]
+modId = "neoforge"
+type = "required"
+versionRange = "${fml_dependency}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies."${id}"]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_dependency}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies."${id}"]]
+modId = "architectury"
+mandatory = true
+versionRange = "[0,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[mixins]]
+config="sparklib.mixins.json"
