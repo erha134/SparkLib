@@ -3,7 +3,7 @@ package io.github.erha134.mc.sparklib.data.provider;
 import com.google.gson.JsonObject;
 import io.github.erha134.easylib.string.StringFormatter;
 import net.minecraft.block.Block;
-import net.minecraft.data.DataOutput;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.enchantment.Enchantment;
@@ -12,29 +12,27 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.stat.StatType;
 import net.minecraft.text.TextContent;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public abstract class SLanguageProvider extends SDataProvider {
     private final String language;
 
-    public SLanguageProvider(String modId, DataOutput output, String language) {
-        super(StringFormatter.format("Language Provider by Spark Lib ({})", language), modId, output);
+    public SLanguageProvider(String modId, DataGenerator generator, String language) {
+        super(StringFormatter.format("Language Provider by Spark Lib ({})", language), modId, generator);
         this.language = language;
     }
 
     public abstract void translate(Translator translator);
 
     @Override
-    public CompletableFuture<?> run(DataWriter writer) {
+    public void run(DataWriter writer) throws IOException {
         Map<String, String> translations = new LinkedHashMap<>();
         this.translate((k, v) -> {
             if (translations.containsKey(k)) {
@@ -46,11 +44,11 @@ public abstract class SLanguageProvider extends SDataProvider {
 
         JsonObject jsonObject = new JsonObject();
         translations.forEach(jsonObject::addProperty);
-        return DataProvider.writeToPath(writer,
-                jsonObject,
-                this.output.getResolver(DataOutput.OutputType.RESOURCE_PACK,
-                        "lang")
-                        .resolveJson(new Identifier(this.modId, this.language)));
+        DataProvider.writeToPath(writer, jsonObject, this.generator.getOutput()
+                .resolve("assets")
+                .resolve(this.modId)
+                .resolve("lang")
+                .resolve(this.language + ".json"));
     }
 
     @FunctionalInterface
@@ -63,10 +61,6 @@ public abstract class SLanguageProvider extends SDataProvider {
 
         default void add(Block block, String value) {
             add(block.getTranslationKey(), value);
-        }
-
-        default void add(RegistryKey<ItemGroup> group, String value) {
-            add(Registries.ITEM_GROUP.getOrThrow(group), value);
         }
 
         default void add(ItemGroup group, String value) {
