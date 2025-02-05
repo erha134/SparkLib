@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SDataGeneration {
-    public static final Logger LOGGER = LoggerFactory.getLogger(SDataGeneration.class);
-
     private final String modId;
     private final DataGenerator generator;
     private final List<SDataProviderFactory<?>> providerFactories = new ArrayList<>();

@@ -6,6 +6,7 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.Lifecycle;
 import io.github.erha134.easylib.string.StringFormatter;
 import io.github.erha134.mc.sparklib.registry.api.Registrable;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
@@ -26,8 +27,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.github.erha134.mc.sparklib.data.SDataGeneration.LOGGER;
-
+@Slf4j
 public abstract class STagProvider<T> extends AbstractTagProvider<T> {
     private final String modId;
     private final DataGenerator generator;
@@ -68,7 +68,7 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
                                         .collect(Collectors.joining(","))));
             } else {
                 JsonElement jsonElement = TagFile.CODEC.encodeStart(JsonOps.INSTANCE,
-                        new TagFile(entries, builder.replace)).getOrThrow(false, LOGGER::error);
+                        new TagFile(entries, builder.replace)).getOrThrow(false, log::error);
                 Path path = this.generator.getOutput()
                         .resolve("data")
                         .resolve(id.getNamespace())
@@ -78,7 +78,7 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
                 try {
                     DataProvider.writeToPath(writer, jsonElement, path);
                 } catch (IOException e) {
-                    LOGGER.error("Couldn't save tags to {}", path, e);
+                    log.error("Couldn't save tags to {}", path, e);
                 }
             }
         });

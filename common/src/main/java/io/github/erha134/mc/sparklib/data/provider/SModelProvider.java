@@ -39,7 +39,6 @@ public abstract class SModelProvider extends ModelProvider {
 
     public abstract void generateItemModels(ItemModelGenerator itemModelGenerator);
 
-    // TODO: Skip over blocks and items that are not from the mod we are processing.
     @Override
     public void run(DataWriter writer) {
         Map<Block, BlockStateSupplier> blockMap = Maps.newHashMap();
@@ -49,6 +48,14 @@ public abstract class SModelProvider extends ModelProvider {
         // Block State Model Generate
         BlockStateModelGenerator blockStateModelGenerator = new BlockStateModelGenerator(bsSupplier -> {
             Block block = bsSupplier.getBlock();
+
+            if (this.validation) {
+                // Skip over blocks and items that are not from the mod we are processing.
+                if (!Registry.BLOCK.getId(block).getNamespace().equals(this.modId)) {
+                    return;
+                }
+            }
+
             BlockStateSupplier blockStateSupplier2 = blockMap.put(block, bsSupplier);
             if (blockStateSupplier2 != null) {
                 throw new IllegalStateException("Duplicate blockstate definition for " + block);
@@ -83,6 +90,16 @@ public abstract class SModelProvider extends ModelProvider {
                 Item item = Item.BLOCK_ITEMS.get(block);
                 if (item != null) {
                     if (items.contains(item)) {
+                        return;
+                    }
+
+                    // Only generate the item model if the block state json was registered
+                    if (!blockMap.containsKey(block)) {
+                        return;
+                    }
+
+                    if (!Registry.ITEM.getId(item).getNamespace().equals(this.modId)) {
+                        // Skip over any items from other mods.
                         return;
                     }
 
