@@ -33,20 +33,22 @@ Wiki is coming soon.
 
 - [x] Version checker
 - [x] Data Generation API (by `SDataGeneration`)
-  - [x] Custom Data Providers (Based on [Fabric Data Generation Api](https://github.com/FabricMC/fabric/tree/1.20.1/fabric-data-generation-api-v1), under Apache-2.0 License)
+  - [x] Custom Data Providers (based on [Fabric Data Generation Api](https://github.com/FabricMC/fabric/tree/1.20.1/fabric-data-generation-api-v1), under Apache-2.0 License)
 
 ### High Priority
 
 - [x] Config API (by [Spark Config](https://github.com/erha134/SparkConfig))
   - [ ] In-game config screens
+- [ ] Better BiomeModifications API (refer to [Architectury API](https://github.com/architectury/architectury-api/blob/1.20/common/src/main/java/dev/architectury/registry/level/biome/BiomeModifications.java))
 - [ ] Lookup API
-- [ ] Energy API
 - [ ] Transfer API
+- [ ] Energy API
 
 ### Low Priority
 
 - [ ] Bucket with Mob
 - [ ] Fluid API
+- [ ] Data Attachment API
 
 ### No Plan
 
