@@ -2,10 +2,11 @@ package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.gson.JsonObject;
 import io.github.erha134.easylib.string.StringFormatter;
+import io.github.erha134.mc.sparklib.data.SDataGeneration;
 import net.minecraft.block.Block;
+import net.minecraft.data.DataCache;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.DataWriter;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttribute;
@@ -13,9 +14,6 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.stat.StatType;
-import net.minecraft.text.TextContent;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.Identifier;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -32,7 +30,7 @@ public abstract class SLanguageProvider extends SDataProvider {
     public abstract void translate(Translator translator);
 
     @Override
-    public void run(DataWriter writer) throws IOException {
+    public void run(DataCache cache) throws IOException {
         Map<String, String> translations = new LinkedHashMap<>();
         this.translate((k, v) -> {
             if (translations.containsKey(k)) {
@@ -44,7 +42,7 @@ public abstract class SLanguageProvider extends SDataProvider {
 
         JsonObject jsonObject = new JsonObject();
         translations.forEach(jsonObject::addProperty);
-        DataProvider.writeToPath(writer, jsonObject, this.generator.getOutput()
+        DataProvider.writeToPath(SDataGeneration.createGson(), cache, jsonObject, this.generator.getOutput()
                 .resolve("assets")
                 .resolve(this.modId)
                 .resolve("lang")
@@ -64,14 +62,7 @@ public abstract class SLanguageProvider extends SDataProvider {
         }
 
         default void add(ItemGroup group, String value) {
-            TextContent content = group.getDisplayName().getContent();
-
-            if (content instanceof TranslatableTextContent tr) {
-                add(tr.getKey(), value);
-                return;
-            }
-
-            throw new IllegalArgumentException("The display name of item group is not translatable.");
+            add("itemGroup." + group.getName(), value);
         }
 
         default void add(EntityType<?> entityType, String value) {
@@ -92,10 +83,6 @@ public abstract class SLanguageProvider extends SDataProvider {
 
         default void add(StatusEffect statusEffect, String value) {
             add(statusEffect.getTranslationKey(), value);
-        }
-
-        default void add(Identifier identifier, String value) {
-            add(identifier.toTranslationKey(), value);
         }
     }
 }

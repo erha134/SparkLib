@@ -4,11 +4,11 @@ accessWidener   v2  named
 accessible method net/minecraft/screen/ScreenHandler addSlot (Lnet/minecraft/screen/slot/Slot;)Lnet/minecraft/screen/slot/Slot;
 
 # Tag Provider
-extendable method net/minecraft/data/server/AbstractTagProvider getName ()Ljava/lang/String;
-extendable method net/minecraft/tag/TagEntry <init> (Lnet/minecraft/util/Identifier;ZZ)V
-accessible field net/minecraft/tag/TagEntry id Lnet/minecraft/util/Identifier;
-accessible field net/minecraft/tag/TagEntry required Z
 accessible field net/minecraft/util/registry/DynamicRegistryManager INFOS Ljava/util/Map;
+accessible class net/minecraft/tag/Tag$ObjectEntry
+accessible class net/minecraft/tag/Tag$OptionalObjectEntry
+accessible class net/minecraft/tag/Tag$TagEntry
+accessible class net/minecraft/tag/Tag$OptionalTagEntry
 
 # Recipe Provider
 extendable method net/minecraft/data/server/RecipeProvider getName ()Ljava/lang/String;

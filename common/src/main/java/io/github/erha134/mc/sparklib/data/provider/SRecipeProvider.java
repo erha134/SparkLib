@@ -2,9 +2,10 @@ package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
+import io.github.erha134.mc.sparklib.data.SDataGeneration;
+import net.minecraft.data.DataCache;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.RecipeProvider;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.util.Identifier;
@@ -27,7 +28,7 @@ public abstract class SRecipeProvider extends RecipeProvider {
     public abstract void generate(Consumer<RecipeJsonProvider> exporter);
 
     @Override
-    public void run(DataWriter writer)  {
+    public void run(DataCache cache)  {
         Set<Identifier> generatedRecipes = Sets.newHashSet();
 
         generate(provider -> {
@@ -43,7 +44,7 @@ public abstract class SRecipeProvider extends RecipeProvider {
                     .resolve("recipes")
                     .resolve(id.getPath() + ".json");
             try {
-                DataProvider.writeToPath(writer, provider.toJson(), recipePath);
+                DataProvider.writeToPath(SDataGeneration.createGson(), cache, provider.toJson(), recipePath);
             } catch (IOException e) {
                 LOGGER.error("Couldn't save recipe {}", recipePath, e);
             }
@@ -57,7 +58,7 @@ public abstract class SRecipeProvider extends RecipeProvider {
                         .resolve("advancements")
                         .resolve(recipeAdvancementId.getPath() + ".json");
                 try {
-                    DataProvider.writeToPath(writer, advancementJson, advancementPath);
+                    DataProvider.writeToPath(SDataGeneration.createGson(), cache, advancementJson, advancementPath);
                 } catch (IOException e) {
                     LOGGER.error("Couldn't save recipe advancement {}", advancementPath, e);
                 }

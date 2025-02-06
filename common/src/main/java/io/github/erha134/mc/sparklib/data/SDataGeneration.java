@@ -1,10 +1,10 @@
 package io.github.erha134.mc.sparklib.data;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.github.erha134.mc.sparklib.data.factory.SDataProviderFactory;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,11 @@ public class SDataGeneration {
 
     public void run() {
         this.providerFactories.forEach(f -> {
-            this.generator.addProvider(true, f.create(this.modId, this.generator));
+            this.generator.addProvider(f.create(this.modId, this.generator));
         });
+    }
+
+    public static Gson createGson() {
+        return new GsonBuilder().setPrettyPrinting().create();
     }
 }

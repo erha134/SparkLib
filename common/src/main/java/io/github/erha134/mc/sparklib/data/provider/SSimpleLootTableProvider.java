@@ -3,9 +3,10 @@ package io.github.erha134.mc.sparklib.data.provider;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import io.github.erha134.easylib.string.StringFormatter;
+import io.github.erha134.mc.sparklib.data.SDataGeneration;
+import net.minecraft.data.DataCache;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.DataWriter;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
@@ -28,7 +29,7 @@ public abstract class SSimpleLootTableProvider extends SDataProvider implements 
     }
 
     @Override
-    public void run(DataWriter writer) throws IOException {
+    public void run(DataCache cache) throws IOException {
         Map<Identifier, LootTable> builders = Maps.newHashMap();
 //        Map<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
 
@@ -46,7 +47,7 @@ public abstract class SSimpleLootTableProvider extends SDataProvider implements 
 //            ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 
             // getOutputPath(fabricDataOutput, entry.getKey())
-            DataProvider.writeToPath(writer, tableJson, this.generator.getOutput()
+            DataProvider.writeToPath(SDataGeneration.createGson(), cache, tableJson, this.generator.getOutput()
                     .resolve("data")
                     .resolve(entry.getKey().getNamespace())
                     .resolve("loot_tables")

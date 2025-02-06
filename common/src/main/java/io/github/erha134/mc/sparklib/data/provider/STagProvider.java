@@ -1,18 +1,20 @@
 package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.Lifecycle;
 import io.github.erha134.easylib.string.StringFormatter;
+import io.github.erha134.mc.sparklib.data.SDataGeneration;
 import io.github.erha134.mc.sparklib.registry.api.Registrable;
 import lombok.extern.slf4j.Slf4j;
+import net.minecraft.data.DataCache;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.AbstractTagProvider;
-import net.minecraft.tag.TagEntry;
-import net.minecraft.tag.TagFile;
+import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagKey;
 import net.minecraft.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -49,11 +52,11 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
     public abstract void configure();
 
     @Override
-    public void run(DataWriter writer) {
+    public void run(DataCache cache) {
         this.tagBuilders.clear();
         this.configure();
         this.tagBuilders.forEach((id, builder) -> {
-            List<TagEntry> entries = builder.build()
+            List<Tag.Entry> entries = builder.build()
                     .stream()
                     .filter((tag) -> !tag.canAdd(this.registry::containsId, this.tagBuilders::containsKey))
                     .toList();
@@ -67,8 +70,6 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
                                         .map(Objects::toString)
                                         .collect(Collectors.joining(","))));
             } else {
-                JsonElement jsonElement = TagFile.CODEC.encodeStart(JsonOps.INSTANCE,
-                        new TagFile(entries, builder.replace)).getOrThrow(false, log::error);
                 Path path = this.generator.getOutput()
                         .resolve("data")
                         .resolve(id.getNamespace())
@@ -76,7 +77,7 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
                         .resolve(id.getPath() + ".json");
 
                 try {
-                    DataProvider.writeToPath(writer, jsonElement, path);
+                    DataProvider.writeToPath(SDataGeneration.createGson(), cache, builder.toJson(), path);
                 } catch (IOException e) {
                     log.error("Couldn't save tags to {}", path, e);
                 }
@@ -108,36 +109,49 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
     }
 
     protected final class STagBuilder {
-        private final List<TagEntry> entries = new ArrayList<>();
+        private final List<Tag.Entry> entries = new ArrayList<>();
         private final boolean replace;
 
         private STagBuilder(boolean replace) {
             this.replace = replace;
         }
 
-        public List<TagEntry> build() {
+        public JsonObject toJson() {
+            JsonObject jsonObject = new JsonObject();
+            JsonArray jsonArray = new JsonArray();
+
+            for (Tag.Entry entry : this.entries) {
+                entry.addToJson(jsonArray);
+            }
+
+            jsonObject.addProperty("replace", this.replace);
+            jsonObject.add("values", jsonArray);
+            return jsonObject;
+        }
+
+        public List<Tag.Entry> build() {
             return List.copyOf(this.entries);
         }
 
-        public STagBuilder add(TagEntry entry) {
+        public STagBuilder add(Tag.Entry entry) {
             this.entries.add(entry);
             return this;
         }
 
         public STagBuilder add(Identifier id) {
-            return this.add(TagEntry.create(id));
+            return this.add(new Tag.ObjectEntry(id));
         }
 
         public STagBuilder addOptional(Identifier id) {
-            return this.add(TagEntry.createOptional(id));
+            return this.add(new Tag.OptionalObjectEntry(id));
         }
 
         public STagBuilder addTag(Identifier id) {
-            return this.add(TagEntry.createTag(id));
+            return this.add(new Tag.TagEntry(id));
         }
 
         public STagBuilder addOptionalTag(Identifier id) {
-            return this.add(TagEntry.createOptionalTag(id));
+            return this.add(new Tag.OptionalTagEntry(id));
         }
 
         public STagBuilder add(T element) {
@@ -186,7 +200,7 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
         }
 
         public STagBuilder forceAddTag(TagKey<T> tag) {
-            return this.add(new ForcedTagEntry(TagEntry.create(tag.id())));
+            return this.add(new ForcedTagEntry(new Tag.TagEntry(tag.id())));
         }
 
         public STagBuilder add(Identifier... ids) {
@@ -211,22 +225,26 @@ public abstract class STagProvider<T> extends AbstractTagProvider<T> {
         }
     }
 
-    public static class ForcedTagEntry extends TagEntry {
-        private final TagEntry delegate;
+    public static class ForcedTagEntry implements Tag.Entry {
+        private final Tag.Entry delegate;
 
-        public ForcedTagEntry(TagEntry delegate) {
-            super(delegate.id, true, delegate.required);
+        public ForcedTagEntry(Tag.Entry delegate) {
             this.delegate = delegate;
         }
 
         @Override
-        public <T> boolean resolve(ValueGetter<T> valueGetter, Consumer<T> idConsumer) {
-            return this.delegate.resolve(valueGetter, idConsumer);
+        public <T> boolean resolve(Function<Identifier, Tag<T>> tagGetter, Function<Identifier, T> objectGetter, Consumer<T> collector) {
+            return this.delegate.resolve(tagGetter, objectGetter, collector);
         }
 
         @Override
         public boolean canAdd(Predicate<Identifier> objectExistsTest, Predicate<Identifier> tagExistsTest) {
             return true;
+        }
+
+        @Override
+        public void addToJson(JsonArray json) {
+            this.delegate.addToJson(json);
         }
     }
 

@@ -1,7 +1,7 @@
 package io.github.erha134.mc.sparklib.data.forge;
 
 import io.github.erha134.mc.sparklib.data.SDataGeneration;
-import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 public class SDataGenerationForge {
     public static SDataGeneration create(String modId, GatherDataEvent e) {

@@ -2,10 +2,11 @@ package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
+import io.github.erha134.mc.sparklib.data.SDataGeneration;
 import net.minecraft.advancement.Advancement;
+import net.minecraft.data.DataCache;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.DataWriter;
 import net.minecraft.util.Identifier;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public abstract class SAdvancementProvider extends SDataProvider {
     public abstract void generate(Consumer<Advancement> consumer);
 
     @Override
-    public void run(DataWriter writer) throws IOException {
+    public void run(DataCache cache) throws IOException {
         final Set<Identifier> ids = Sets.newHashSet();
         final Set<Advancement> advancements = Sets.newHashSet();
 
@@ -34,7 +35,7 @@ public abstract class SAdvancementProvider extends SDataProvider {
             JsonObject advancementJson = advancement.createTask().toJson();
 //            ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 
-            DataProvider.writeToPath(writer, advancementJson,
+            DataProvider.writeToPath(SDataGeneration.createGson(), cache, advancementJson,
                     this.generator.getOutput()
                             .resolve("data")
                             .resolve(advancement.getId().getNamespace())

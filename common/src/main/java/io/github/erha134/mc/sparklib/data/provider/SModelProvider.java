@@ -3,10 +3,11 @@ package io.github.erha134.mc.sparklib.data.provider;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
+import io.github.erha134.mc.sparklib.data.SDataGeneration;
 import net.minecraft.block.Block;
+import net.minecraft.data.DataCache;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.DataWriter;
 import net.minecraft.data.client.*;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
@@ -40,7 +41,7 @@ public abstract class SModelProvider extends ModelProvider {
     public abstract void generateItemModels(ItemModelGenerator itemModelGenerator);
 
     @Override
-    public void run(DataWriter writer) {
+    public void run(DataCache cache) {
         Map<Block, BlockStateSupplier> blockMap = Maps.newHashMap();
         Map<Identifier, Supplier<JsonElement>> jsonMap = Maps.newHashMap();
         Set<Item> items = Sets.newHashSet();
@@ -119,7 +120,7 @@ public abstract class SModelProvider extends ModelProvider {
                         .resolve(key.getPath() + ".json");
 
                 try {
-                    DataProvider.writeToPath(writer, value.get(), path);
+                    DataProvider.writeToPath(SDataGeneration.createGson(), cache, value.get(), path);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -135,7 +136,7 @@ public abstract class SModelProvider extends ModelProvider {
                         .resolve(id.getPath() + ".json");
 
                 try {
-                    DataProvider.writeToPath(writer, value.get(), path);
+                    DataProvider.writeToPath(SDataGeneration.createGson(), cache, value.get(), path);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
