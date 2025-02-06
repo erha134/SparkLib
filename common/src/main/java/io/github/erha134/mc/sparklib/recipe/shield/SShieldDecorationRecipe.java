@@ -3,6 +3,8 @@ package io.github.erha134.mc.sparklib.recipe.shield;
 import io.github.erha134.mc.sparklib.item.shield.SShieldItem;
 import io.github.erha134.mc.sparklib.recipe.SRecipeSerializers;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.BannerPatternsComponent;
 import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.BannerItem;
 import net.minecraft.item.BlockItem;
@@ -13,6 +15,7 @@ import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShieldDecorationRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.World;
 
 public class SShieldDecorationRecipe extends ShieldDecorationRecipe {
@@ -46,7 +49,9 @@ public class SShieldDecorationRecipe extends ShieldDecorationRecipe {
                         return false;
                     }
 
-                    if (BlockItem.getBlockEntityNbt(stack) != null) {
+                    BannerPatternsComponent bannerPatternsComponent = stack.getOrDefault(DataComponentTypes.BANNER_PATTERNS,
+                            BannerPatternsComponent.DEFAULT);
+                    if (!bannerPatternsComponent.layers().isEmpty()) {
                         return false;
                     }
 
@@ -59,7 +64,7 @@ public class SShieldDecorationRecipe extends ShieldDecorationRecipe {
     }
 
     @Override
-    public ItemStack craft(RecipeInputInventory recipeInputInventory, DynamicRegistryManager dynamicRegistryManager) {
+    public ItemStack craft(RecipeInputInventory recipeInputInventory, RegistryWrapper.WrapperLookup lookup) {
         ItemStack banner = ItemStack.EMPTY;
         ItemStack shield = ItemStack.EMPTY;
 
@@ -76,10 +81,8 @@ public class SShieldDecorationRecipe extends ShieldDecorationRecipe {
         }
 
         if (!shield.isEmpty()) {
-            NbtCompound blockEntityNbt = BlockItem.getBlockEntityNbt(banner);
-            NbtCompound nbt = (blockEntityNbt == null ? new NbtCompound() : blockEntityNbt.copy());
-            nbt.putInt("Base", ((BannerItem) banner.getItem()).getColor().getId());
-            BlockItem.setBlockEntityNbt(shield, BlockEntityType.BANNER, nbt);
+            shield.set(DataComponentTypes.BANNER_PATTERNS, banner.get(DataComponentTypes.BANNER_PATTERNS));
+            shield.set(DataComponentTypes.BASE_COLOR, ((BannerItem) banner.getItem()).getColor());
         }
 
         return shield;

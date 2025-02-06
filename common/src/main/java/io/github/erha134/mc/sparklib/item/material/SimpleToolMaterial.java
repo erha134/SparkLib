@@ -1,14 +1,16 @@
 package io.github.erha134.mc.sparklib.item.material;
 
 import lombok.Getter;
+import net.minecraft.block.Block;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.tag.TagKey;
 
 import java.util.function.Supplier;
 
 public class SimpleToolMaterial implements ToolMaterial {
     @Getter(onMethod_ = {@Override})
-    private final int miningLevel;
+    private final TagKey<Block> inverseTag;
     @Getter(onMethod_ = {@Override})
     private final int durability;
     @Getter(onMethod_ = {@Override})
@@ -19,8 +21,8 @@ public class SimpleToolMaterial implements ToolMaterial {
     private final int enchantability;
     private final Supplier<Ingredient> repairIngredient;
 
-    public SimpleToolMaterial(int miningLevel, int itemDurability, float miningSpeed, float attackDamage, int enchantability, Supplier<Ingredient> repairIngredient) {
-        this.miningLevel = miningLevel;
+    public SimpleToolMaterial(TagKey<Block> inverseTag, int itemDurability, float miningSpeed, float attackDamage, int enchantability, Supplier<Ingredient> repairIngredient) {
+        this.inverseTag = inverseTag;
         this.durability = itemDurability;
         this.miningSpeedMultiplier = miningSpeed;
         this.attackDamage = attackDamage;

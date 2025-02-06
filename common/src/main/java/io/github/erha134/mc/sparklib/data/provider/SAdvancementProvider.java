@@ -38,7 +38,7 @@ public abstract class SAdvancementProvider extends SDataProvider {
                 throw new IllegalStateException("Duplicate advancement " + advancement.id());
             }
 
-            JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(JsonOps.INSTANCE, advancement.value()), IllegalStateException::new)
+            JsonObject advancementJson = Advancement.CODEC.encodeStart(JsonOps.INSTANCE, advancement.value()).getOrThrow(IllegalStateException::new)
                     .getAsJsonObject();
 //            ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 

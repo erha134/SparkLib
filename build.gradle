@@ -44,7 +44,10 @@ subprojects {
 
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-        mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
+        mappings loom.layered {
+            mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
+            mappings "dev.architectury:yarn-mappings-patch-neoforge:${rootProject.yarn_mappings_patch_version}"
+        }
 
         // [Optional] Other dependencies
          implementation "com.google.code.findbugs:jsr305:${rootProject.jsr305_version}"
@@ -75,7 +78,7 @@ allprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
-        options.release = 17
+        options.release = 21
         options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
     }
 

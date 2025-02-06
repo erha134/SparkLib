@@ -15,6 +15,7 @@ accessible field net/minecraft/registry/tag/TagEntry required Z
 extendable method net/minecraft/data/server/recipe/RecipeProvider getName ()Ljava/lang/String;
 accessible field net/minecraft/data/server/recipe/RecipeProvider recipesPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
 accessible field net/minecraft/data/server/recipe/RecipeProvider advancementsPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
+extendable method net/minecraft/data/server/recipe/RecipeProvider run (Lnet/minecraft/data/DataWriter;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)Ljava/util/concurrent/CompletableFuture;
 
 # Model Provider
 extendable method net/minecraft/data/client/ModelProvider getName ()Ljava/lang/String;

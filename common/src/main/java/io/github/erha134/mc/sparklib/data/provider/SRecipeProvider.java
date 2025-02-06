@@ -1,6 +1,7 @@
 package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.common.collect.Sets;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.advancement.Advancement;
@@ -12,6 +13,8 @@ import net.minecraft.data.server.recipe.CraftingRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
@@ -24,8 +27,8 @@ import java.util.concurrent.CompletableFuture;
 public abstract class SRecipeProvider extends RecipeProvider {
     private final String modId;
 
-    public SRecipeProvider(String modId, DataOutput output) {
-        super(output);
+    public SRecipeProvider(String modId, DataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+        super(output, registriesFuture);
         this.modId = modId;
     }
 
@@ -33,7 +36,7 @@ public abstract class SRecipeProvider extends RecipeProvider {
     public abstract void generate(RecipeExporter exporter);
 
     @Override
-    public CompletableFuture<?> run(DataWriter writer) {
+    public CompletableFuture<?> run(DataWriter writer, RegistryWrapper.WrapperLookup registryLookup) {
         Set<Identifier> generatedRecipes = Sets.newHashSet();
         List<CompletableFuture<?>> list = new ArrayList<>();
         generate(new RecipeExporter() {
@@ -45,19 +48,17 @@ public abstract class SRecipeProvider extends RecipeProvider {
                     throw new IllegalStateException("Duplicate recipe " + id);
                 }
 
-                JsonObject recipeJson = Util.getResult(Recipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe), IllegalStateException::new)
+                RegistryOps<JsonElement> registryOps = registryLookup.getOps(JsonOps.INSTANCE);
+                JsonObject recipeJson = Recipe.CODEC.encodeStart(registryOps, recipe).getOrThrow(IllegalStateException::new)
                         .getAsJsonObject();
 
-                list.add(DataProvider.writeToPath(writer, recipeJson,
-                        SRecipeProvider.this.recipesPathResolver.resolveJson(id)));
+                list.add(DataProvider.writeToPath(writer, recipeJson, SRecipeProvider.this.recipesPathResolver.resolveJson(id)));
 
                 if (advancement != null) {
-                    JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(JsonOps.INSTANCE, advancement.value()),
-                                    IllegalStateException::new)
+                    JsonObject advancementJson = Advancement.CODEC.encodeStart(registryOps, advancement.value()).getOrThrow(IllegalStateException::new)
                             .getAsJsonObject();
 
-                    list.add(DataProvider.writeToPath(writer,
-                            advancementJson,
+                    list.add(DataProvider.writeToPath(writer, advancementJson,
                             SRecipeProvider.this.advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
                 }
             }

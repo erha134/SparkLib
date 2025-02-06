@@ -1,13 +1,13 @@
 package io.github.erha134.mc.sparklib.recipe;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.recipe.*;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.World;
 
 public class SingleIngredientRecipe<R extends SingleIngredientRecipe<R>> implements Recipe<SimpleInventory> {
@@ -36,7 +36,7 @@ public class SingleIngredientRecipe<R extends SingleIngredientRecipe<R>> impleme
     }
 
     @Override
-    public ItemStack craft(SimpleInventory inventory, DynamicRegistryManager registryManager) {
+    public ItemStack craft(SimpleInventory inventory, RegistryWrapper.WrapperLookup lookup) {
         return this.output.copy();
     }
 
@@ -46,7 +46,7 @@ public class SingleIngredientRecipe<R extends SingleIngredientRecipe<R>> impleme
     }
 
     @Override
-    public ItemStack getResult(DynamicRegistryManager registryManager) {
+    public ItemStack getResult(RegistryWrapper.WrapperLookup registriesLookup) {
         return this.output;
     }
 
@@ -62,14 +62,16 @@ public class SingleIngredientRecipe<R extends SingleIngredientRecipe<R>> impleme
 
     public static class Serializer<R extends SingleIngredientRecipe<R>> implements RecipeSerializer<R> {
         private final Factory<R> factory;
-        private final Codec<R> codec;
+        private final MapCodec<R> codec;
+        private final PacketCodec<RegistryByteBuf, R> packetCodec;
 
         public Serializer(Factory<R> factory) {
             this.factory = factory;
-            this.codec = RecordCodecBuilder.create(instance -> instance.group(
+            this.codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
                             Ingredient.DISALLOW_EMPTY_CODEC.fieldOf("input").forGetter(recipe -> recipe.input),
                             ItemStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.output))
                     .apply(instance, this.factory::create));
+            this.packetCodec = PacketCodec.ofStatic(this::write, this::read);
         }
 
 //        @Override
@@ -80,21 +82,24 @@ public class SingleIngredientRecipe<R extends SingleIngredientRecipe<R>> impleme
 //        }
 
         @Override
-        public Codec<R> codec() {
+        public MapCodec<R> codec() {
             return this.codec;
         }
 
         @Override
-        public R read(PacketByteBuf buf) {
-            Ingredient input = Ingredient.fromPacket(buf);
-            ItemStack output = buf.readItemStack();
+        public PacketCodec<RegistryByteBuf, R> packetCodec() {
+            return this.packetCodec;
+        }
+
+        private R read(RegistryByteBuf buf) {
+            Ingredient input = Ingredient.PACKET_CODEC.decode(buf);
+            ItemStack output = ItemStack.PACKET_CODEC.decode(buf);
             return this.factory.create(input, output);
         }
 
-        @Override
-        public void write(PacketByteBuf buf, R recipe) {
-            recipe.input.write(buf);
-            buf.writeItemStack(recipe.output);
+        private void write(RegistryByteBuf buf, R recipe) {
+            Ingredient.PACKET_CODEC.encode(buf, recipe.input);
+            ItemStack.PACKET_CODEC.encode(buf, recipe.output);
         }
 
         public interface Factory<R extends SingleIngredientRecipe<R>> {

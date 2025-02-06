@@ -22,6 +22,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -95,14 +96,10 @@ public abstract class SLanguageProvider extends SDataProvider {
         }
 
         default void add(StatType<?> statType, String value) {
-            Identifier id = Registries.STAT_TYPE.getId(statType);
-
-            if (id == null) {
-                log.error("No identifier for stat type: {}", statType.getName().getString());
-                return;
-            }
-
-            add(id.toString().replace(':', '.'), value);
+            add("stat_type." + Optional.ofNullable(Registries.STAT_TYPE.getId(statType))
+                    .orElseThrow()
+                    .toString()
+                    .replace(':', '.'), value);
         }
 
         default void add(StatusEffect statusEffect, String value) {

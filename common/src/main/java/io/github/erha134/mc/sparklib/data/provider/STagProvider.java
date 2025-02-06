@@ -12,6 +12,7 @@ import net.minecraft.data.server.tag.TagProvider;
 import net.minecraft.registry.*;
 import net.minecraft.registry.tag.*;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -50,7 +51,7 @@ public abstract class STagProvider<T> extends TagProvider<T> {
                     this.registryLoadFuture.complete(null);
                     return registryLookupFuture;
                 })
-                .thenCombineAsync(this.parentTagLookupFuture, RegistryInfo::new)
+                .thenCombineAsync(this.parentTagLookupFuture, RegistryInfo::new, Util.getMainWorkerExecutor())
                 .thenCompose(info -> {
                     RegistryWrapper.Impl<T> impl = info.contents.getWrapperOrThrow(this.registryRef);
 
@@ -80,8 +81,9 @@ public abstract class STagProvider<T> extends TagProvider<T> {
                                                     )
                                             );
                                         } else {
-                                            JsonElement jsonElement = TagFile.CODEC.encodeStart(JsonOps.INSTANCE,
-                                                    new TagFile(entries, builder.replace)).getOrThrow(false, log::error);
+                                            RegistryOps<JsonElement> registryOps = info.contents.getOps(JsonOps.INSTANCE);
+                                            JsonElement jsonElement = TagFile.CODEC.encodeStart(registryOps,
+                                                    new TagFile(entries, builder.replace)).getOrThrow();
                                             Path path = this.pathResolver.resolveJson(identifier);
                                             return DataProvider.writeToPath(writer, jsonElement, path);
                                         }

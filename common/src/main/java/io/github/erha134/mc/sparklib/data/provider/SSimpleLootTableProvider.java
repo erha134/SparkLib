@@ -1,6 +1,7 @@
 package io.github.erha134.mc.sparklib.data.provider;
 
 import com.google.common.collect.Maps;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import io.github.erha134.easylib.string.StringFormatter;
@@ -11,6 +12,8 @@ import net.minecraft.data.server.loottable.LootTableGenerator;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
@@ -19,13 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class SSimpleLootTableProvider extends SDataProvider implements LootTableGenerator, DataProvider {
+public abstract class SSimpleLootTableProvider extends SRegistryDependentDataProvider implements LootTableGenerator, DataProvider {
     private final LootContextType lootContextType;
 
-    public SSimpleLootTableProvider(String modId, DataOutput output, LootContextType lootContextType) {
+    public SSimpleLootTableProvider(String modId, DataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, LootContextType lootContextType) {
         super(StringFormatter.format("{} Loot Table Provider by Spark Lib", LootContextTypes.MAP.inverse().get(lootContextType)),
                 modId,
-                output);
+                output,
+                registriesFuture);
         this.lootContextType = lootContextType;
     }
 
@@ -34,30 +38,25 @@ public abstract class SSimpleLootTableProvider extends SDataProvider implements 
         Map<Identifier, LootTable> builders = Maps.newHashMap();
 //        Map<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
 
-        accept((id, builder) -> {
-//            ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(builder);
-//            conditionMap.put(id, conditions);
+        return this.registriesFuture.thenCompose(lookup -> {
+            accept(lookup, (registryKey, builder) -> {
+                Identifier id = registryKey.getValue();
 
-            if (builders.put(id, builder.type(this.lootContextType).build()) != null) {
-                throw new IllegalStateException("Duplicate loot table " + id);
+                if (builders.put(id, builder.type(this.lootContextType).build()) != null) {
+                    throw new IllegalStateException("Duplicate loot table " + id);
+                }
+            });
+
+            RegistryOps<JsonElement> ops = lookup.getOps(JsonOps.INSTANCE);
+            final List<CompletableFuture<?>> futures = new ArrayList<>();
+            for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
+                JsonObject tableJson = (JsonObject) LootTable.CODEC.encodeStart(ops, entry.getValue()).getOrThrow(IllegalStateException::new);
+                futures.add(DataProvider.writeToPath(writer, tableJson, this.output
+                        .getResolver(DataOutput.OutputType.DATA_PACK, "loot_tables")
+                        .resolveJson(entry.getKey())));
             }
+
+            return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
         });
-
-        final List<CompletableFuture<?>> futures = new ArrayList<>();
-
-        for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
-            JsonObject tableJson = (JsonObject) Util.getResult(LootTable.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()),
-                    IllegalStateException::new);
-//            ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
-
-            // getOutputPath(fabricDataOutput, entry.getKey())
-            futures.add(DataProvider.writeToPath(writer,
-                    tableJson,
-                    this.output.getResolver(DataOutput.OutputType.DATA_PACK,
-                                    "loot_tables")
-                            .resolveJson(entry.getKey())));
-        }
-
-        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 }
