@@ -54,7 +54,7 @@ jobs:
           properties: "mod_version minecraft_version"
 
       - name: create github release
-        if: github.repository_owner == 'erha134' && contains(github.event.head_commit.message, '[release]') == true
+        if: github.repository_owner == 'erha134' && contains(github.event.head_commit.message, '[release]') == true && startsWith(github.ref, 'refs/heads/upstream') == false
         uses: softprops/action-gh-release@v2
         with:
           name: "${{ steps.prop_info.outputs.mod_version }} for mc${{ steps.prop_info.outputs.minecraft_version }}"
@@ -62,6 +62,7 @@ jobs:
           files: |
             fabric/build/libs/*.jar
             forge/build/libs/*.jar
+            neoforge/build/libs/*.jar
           target_commitish: ${{ github.event.ref }}
           generate_release_notes: true
           token: ${{ secrets.RELEASE_TOKEN }}
