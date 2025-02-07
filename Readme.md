@@ -48,7 +48,6 @@ Wiki is coming soon.
 
 - [ ] Bucket with Mob
 - [ ] Fluid API
-- [ ] Data Attachment API
 
 ### No Plan
 

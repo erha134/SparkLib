@@ -18,9 +18,4 @@ public interface ItemExtensions extends Registrable<Item>, ItemStackProvider {
     default RegistryEntry.Reference<Item> sparklib$entry() {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    default ItemStack sparklib$asStack() {
-        throw new UnsupportedOperationException();
-    }
 }

@@ -1,8 +1,10 @@
 package io.github.erha134.mc.sparklib.item.stack;
 
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 
-@FunctionalInterface
 public interface ItemStackProvider {
-    ItemStack sparklib$asStack();
+    default ItemStack sparklib$asStack() {
+        return new ItemStack((ItemConvertible) this);
+    }
 }
