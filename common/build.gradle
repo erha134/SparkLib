@@ -16,15 +16,7 @@ dependencies {
     implementation "org.apache.maven:maven-artifact:${rootProject.apache_maven_artifact_version}"
     api "com.github.erha134:EasyLib:${rootProject.easylib_version}"
     api "com.github.erha134.SparkConfig:sparkconfig-core:${rootProject.sparkconfig_version}"
-    api "com.github.erha134.SparkConfig:sparkconfig-json:${rootProject.sparkconfig_version}"
-}
-
-processResources {
-    inputs.property "name", rootProject.mod_name
-
-    filesMatching("pack.mcmeta") {
-        expand "name": rootProject.mod_name
-    }
+    api "com.github.erha134.SparkConfig:sparkconfig-serializers-gson:${rootProject.sparkconfig_version}"
 }
 
 publishing {

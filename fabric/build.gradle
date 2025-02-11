@@ -9,6 +9,10 @@ architectury {
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    runConfigs.forEach {
+        it.ideConfigGenerated = true
+    }
 }
 
 configurations {
@@ -17,10 +21,6 @@ configurations {
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
-}
-
-fabricApi {
-    configureDataGeneration()
 }
 
 dependencies {
@@ -35,7 +35,7 @@ dependencies {
     include(implementation("org.apache.maven:maven-artifact:${rootProject.apache_maven_artifact_version}"))
     include(api("com.github.erha134:EasyLib:${rootProject.easylib_version}"))
     include(api("com.github.erha134.SparkConfig:sparkconfig-core:${rootProject.sparkconfig_version}"))
-    include(api("com.github.erha134.SparkConfig:sparkconfig-json:${rootProject.sparkconfig_version}"))
+    include(api("com.github.erha134.SparkConfig:sparkconfig-serializers-gson:${rootProject.sparkconfig_version}"))
 }
 
 String issues = rootProject.mod_issues_page

@@ -24,7 +24,6 @@ Wiki is coming soon.
 ## Features
 
 - [`Registrable`](https://github.com/erha134/SparkLib/blob/1.20/common/src/main/java/io/github/erha134/mc/sparklib/registration/api/Registrable.java) API: Get `RegistryEntry`s from items, blocks, etc.
-- Shield API: Make your own shields in Minecraft. (Experimental)
 - Basic classes
 
 ## Todos
@@ -32,26 +31,27 @@ Wiki is coming soon.
 ### Done
 
 - [x] Version checker
-- [x] Data Generation API (by `SDataGeneration`)
-  - [x] Custom Data Providers (based on [Fabric Data Generation Api](https://github.com/FabricMC/fabric/tree/1.20.1/fabric-data-generation-api-v1), under Apache-2.0 License)
+- [x] Data generation API (by `SDataGeneration`)
+  - [x] Custom `DataProvider`(s) (based on [Fabric Data Generation Api](https://github.com/FabricMC/fabric/tree/1.20.1/fabric-data-generation-api-v1), under Apache-2.0 License)
+- [x] `SRegistrar` API
+  - [x] Create custom registry
+  - [ ] Annotation-driven register
 
 ### High Priority
 
 - [x] Config API (by [Spark Config](https://github.com/erha134/SparkConfig))
   - [ ] In-game config screens
-- [ ] Better BiomeModifications API (refer to [Architectury API](https://github.com/architectury/architectury-api/blob/1.20/common/src/main/java/dev/architectury/registry/level/biome/BiomeModifications.java))
-- [ ] Lookup API
-- [ ] Transfer API
-- [ ] Energy API
 
 ### Low Priority
 
 - [ ] Bucket with Mob
 - [ ] Fluid API
+- [ ] Transfer API
+- [ ] Energy API
+- [ ] Better BiomeModifications API (refer to [Architectury API](https://github.com/architectury/architectury-api/blob/1.20/common/src/main/java/dev/architectury/registry/level/biome/BiomeModifications.java))
+- [ ] Lookup API
 
 ### No Plan
-
-- [ ] Annotation-driven register
 
 ## Maven
 

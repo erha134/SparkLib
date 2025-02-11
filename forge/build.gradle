@@ -7,14 +7,6 @@ architectury {
     forge()
 }
 
-def generatedResources = file("src/generated")
-
-sourceSets {
-    main {
-        resources.srcDir generatedResources
-    }
-}
-
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
@@ -25,14 +17,8 @@ loom {
         mixinConfig "sparklib.mixins.json"
     }
 
-    runs {
-        data {
-            data()
-            programArgs "--all", "--mod", "sparklib"
-            programArgs "--output", generatedResources.absolutePath
-
-//            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
-        }
+    runConfigs.forEach {
+        it.ideConfigGenerated = true
     }
 }
 
@@ -59,12 +45,12 @@ dependencies {
     include(implementation("org.apache.maven:maven-artifact:${rootProject.apache_maven_artifact_version}"))
     include(api("com.github.erha134:EasyLib:${rootProject.easylib_version}"))
     include(api("com.github.erha134.SparkConfig:sparkconfig-core:${rootProject.sparkconfig_version}"))
-    include(api("com.github.erha134.SparkConfig:sparkconfig-json:${rootProject.sparkconfig_version}"))
+    include(api("com.github.erha134.SparkConfig:sparkconfig-serializers-gson:${rootProject.sparkconfig_version}"))
 
     // fix runtime NoClassDefError
     forgeRuntimeLibrary "com.github.erha134:EasyLib:${rootProject.easylib_version}"
     forgeRuntimeLibrary "com.github.erha134.SparkConfig:sparkconfig-core:${rootProject.sparkconfig_version}"
-    forgeRuntimeLibrary "com.github.erha134.SparkConfig:sparkconfig-json:${rootProject.sparkconfig_version}"
+    forgeRuntimeLibrary "com.github.erha134.SparkConfig:sparkconfig-serializers-gson:${rootProject.sparkconfig_version}"
 }
 
 String issues = rootProject.mod_issues_page
@@ -99,6 +85,10 @@ processResources {
 
     filesMatching("META-INF/mods.toml") {
         expand props
+    }
+
+    filesMatching("pack.mcmeta") {
+        expand "name": rootProject.mod_name
     }
 }
 

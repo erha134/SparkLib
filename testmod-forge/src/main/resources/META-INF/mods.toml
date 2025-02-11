@@ -1,0 +1,44 @@
+modLoader = "javafml"
+loaderVersion = "[0, )"
+issueTrackerURL = "https://github.com/"
+license = "The unlicense"
+
+[[mods]]
+modId = "testmod"
+version = "1.0.0"
+displayName = "Test Mod"
+authors = "Unknown"
+credits = ""
+displayURL = ""
+description = '''
+A test mod for Spark Lib.
+'''
+logoFile = "icon.png"
+
+[[dependencies.testmod]]
+modId = "forge"
+mandatory = true
+versionRange = "[0, )"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.testmod]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[0, )"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.testmod]]
+modId = "architectury"
+mandatory = true
+versionRange = "[0, )"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.testmod]]
+modId = "sparklib"
+mandatory = true
+versionRange = "[0, )"
+ordering = "AFTER"
+side = "BOTH"

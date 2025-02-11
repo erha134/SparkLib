@@ -29,7 +29,7 @@ public final class VersionChecker {
     @Getter
     public static final class CheckContext {
         private Status status;
-        private String current;
+        private final String current;
         private String recommended;
         private String latest;
 
@@ -108,7 +108,7 @@ public final class VersionChecker {
 
                 context.latest = l;
             }
-        } catch (IOException $) {
+        } catch (IOException ignored) {
             context.status = Status.FAILED;
         }
 
