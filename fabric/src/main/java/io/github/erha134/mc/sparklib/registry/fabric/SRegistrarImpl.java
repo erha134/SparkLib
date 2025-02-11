@@ -1,6 +1,7 @@
 package io.github.erha134.mc.sparklib.registry.fabric;
 
 import com.mojang.serialization.Codec;
+import io.github.erha134.mc.sparklib.registry.RegistryHolder;
 import io.github.erha134.mc.sparklib.registry.SRegistrar;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
@@ -11,6 +12,7 @@ import net.minecraft.registry.DefaultedRegistry;
 import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import java.util.function.Supplier;
 
@@ -24,9 +26,10 @@ public final class SRegistrarImpl extends SRegistrar {
     }
 
     @Override
-    public <R, T extends R> Supplier<T> register(Registry<R> registry, String id, Supplier<T> supplier) {
-        T entry = Registry.register(registry, this.id(id), supplier.get());
-        return () -> entry;
+    public <R, T extends R> RegistryHolder<T> register(Registry<R> registry, String id, Supplier<T> supplier) {
+        Identifier entryId = this.id(id);
+        T entry = Registry.register(registry, entryId, supplier.get());
+        return new RegistryHolder<>(() -> entry, entryId);
     }
 
     @Override

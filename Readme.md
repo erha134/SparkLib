@@ -41,7 +41,6 @@ Wiki is coming soon.
   - [ ] In-game config screens
 - [x] `SRegistrar` API
   - [x] Create custom registry
-  - [ ] Annotation-driven register
 
 ### Low Priority
 

@@ -1,6 +1,6 @@
 package com.example.test;
 
-import com.example.test.registry.TestRegistry;
+import com.example.test.registry.TestRegister;
 import io.github.erha134.mc.sparklib.util.VersionChecker;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ public final class TestMod {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static void init() {
-        TestRegistry.register();
+        TestRegister.register();
 
         CompletableFuture.supplyAsync(() -> VersionChecker.doCheck("47.3.22",
                         "https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json"))

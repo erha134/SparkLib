@@ -3,6 +3,7 @@ package io.github.erha134.mc.sparklib.registry.forge;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
 import dev.architectury.platform.forge.EventBuses;
+import io.github.erha134.mc.sparklib.registry.RegistryHolder;
 import io.github.erha134.mc.sparklib.registry.SRegistrar;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroup;
@@ -11,10 +12,7 @@ import net.minecraft.registry.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DataPackRegistryEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.RegistryManager;
+import net.minecraftforge.registries.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +36,7 @@ public final class SRegistrarImpl extends SRegistrar {
     }
 
     @Override
-    public <R, T extends R> Supplier<T> register(Registry<R> registry, String id, Supplier<T> supplier) {
+    public <R, T extends R> RegistryHolder<T> register(Registry<R> registry, String id, Supplier<T> supplier) {
         RegistryKey<? extends Registry<R>> key = registry.getKey();
         ForgeRegistry<R> forgeRegistry = RegistryManager.ACTIVE.getRegistry(key);
 
@@ -46,13 +44,15 @@ public final class SRegistrarImpl extends SRegistrar {
             DeferredRegister<R> deferredRegister = (DeferredRegister<R>) this.deferredRegisters.computeIfAbsent(
                     forgeRegistry.getRegistryKey().getValue(), $ -> DeferredRegister.create(forgeRegistry, this.modId));
 
-            return deferredRegister.register(id, supplier);
+            RegistryObject<T> object = deferredRegister.register(id, supplier);
+            return new RegistryHolder<>(object, this.id(id));
         }
 
         DeferredRegister<R> deferredRegister = (DeferredRegister<R>) this.deferredRegisters.computeIfAbsent(
                 key.getValue(), $ -> DeferredRegister.create(key, this.modId));
 
-        return deferredRegister.register(id, supplier);
+        RegistryObject<T> object = deferredRegister.register(id, supplier);
+        return new RegistryHolder<>(object, this.id(id));
     }
 
     @Override
