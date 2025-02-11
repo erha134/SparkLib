@@ -33,14 +33,15 @@ Wiki is coming soon.
 - [x] Version checker
 - [x] Data generation API (by `SDataGeneration`)
   - [x] Custom `DataProvider`(s) (based on [Fabric Data Generation Api](https://github.com/FabricMC/fabric/tree/1.20.1/fabric-data-generation-api-v1), under Apache-2.0 License)
-- [x] `SRegistrar` API
-  - [x] Create custom registry
-  - [ ] Annotation-driven register
+- [x] `DeferredRegisterManager`
 
 ### High Priority
 
 - [x] Config API (by [Spark Config](https://github.com/erha134/SparkConfig))
   - [ ] In-game config screens
+- [x] `SRegistrar` API
+  - [x] Create custom registry
+  - [ ] Annotation-driven register
 
 ### Low Priority
 
