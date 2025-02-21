@@ -1,0 +1,4 @@
+{
+  "command.sparklib.version": "Spark Lib Version: %s",
+  "sparklib.command.debug": "This command is for developing/ debugging purposes only!"
+}

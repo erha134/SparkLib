@@ -1,0 +1,4 @@
+{
+  "command.sparklib.version": "Spark Lib 版本：%s",
+  "sparklib.command.debug": "此命令仅用于开发或调试目的！"
+}
