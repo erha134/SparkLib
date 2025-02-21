@@ -23,24 +23,20 @@ Wiki is coming soon.
 
 ## Features
 
-- [`Registrable`](https://github.com/erha134/SparkLib/blob/1.20/common/src/main/java/io/github/erha134/mc/sparklib/registration/api/Registrable.java) API: Get `RegistryEntry`s from items, blocks, etc.
 - Basic classes
-
-## Todos
-
-### Done
-
 - [x] Version checker
 - [x] Data generation API (by `SDataGeneration`)
   - [x] Custom `DataProvider`(s) (based on [Fabric Data Generation Api](https://github.com/FabricMC/fabric/tree/1.20.1/fabric-data-generation-api-v1), under Apache-2.0 License)
 - [x] `DeferredRegisterManager`
+- [x] `SRegistrar` API (A more user-friendly alternative to `DeferredRegister`)
+  - [x] Create custom registry
+
+## Todos
 
 ### High Priority
 
 - [x] Config API (by [Spark Config](https://github.com/erha134/SparkConfig))
   - [ ] In-game config screens
-- [x] `SRegistrar` API
-  - [x] Create custom registry
 
 ### Low Priority
 

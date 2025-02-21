@@ -3,7 +3,6 @@ package io.github.erha134.mc.sparklib.data.provider;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import io.github.erha134.easylib.string.StringFormatter;
-import io.github.erha134.mc.sparklib.registry.api.Registrable;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
@@ -171,10 +170,6 @@ public abstract class STagProvider<T> extends TagProvider<T> {
                     .map(this::getEntryKey)
                     .forEach(this::add);
             return this;
-        }
-
-        public STagBuilder add(Registrable<T> registrable) {
-            return this.add(registrable.sparklib$entryKey());
         }
 
         public STagBuilder add(RegistryKey<T> key) {

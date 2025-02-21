@@ -111,7 +111,7 @@ public abstract class SModelProvider extends ModelProvider {
             CompletableFuture<?> writeBlockStateModelJsonFuture = CompletableFuture.allOf(blockMap.entrySet()
                     .stream()
                     .map(entry -> {
-                        Path path = this.blockstatesPathResolver.resolveJson(entry.getKey().sparklib$entryId());
+                        Path path = this.blockstatesPathResolver.resolveJson(entry.getKey().getRegistryEntry().registryKey().getValue());
                         return DataProvider.writeToPath(writer, entry.getValue().get(), path);
                     })
                     .toArray(CompletableFuture[]::new));

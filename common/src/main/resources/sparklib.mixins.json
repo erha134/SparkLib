@@ -6,9 +6,6 @@
   "client": [
   ],
   "mixins": [
-    "inject.block.BlockMixin",
-    "inject.fluid.FluidMixin",
-    "inject.item.ItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1
