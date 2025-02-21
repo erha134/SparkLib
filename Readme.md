@@ -10,7 +10,7 @@ Wiki is coming soon.
 |-------------------|----------------|----------------|---------------|------------------|------------|--------------------|
 | 1.20.5-1.20.6     | 1.0.2          | ✅              | ❌             | ✅                | 1.20.6     | ✅                  |
 | 1.20.2-1.20.4     | 1.0.2          | ✅              | ✅             | ✅                | 1.20.4     | ✅                  |
-| 1.20-1.20.1       | 1.0.2          | ✅              | ✅             | ❌                | 1.20       | ✅                  |
+| 1.20-1.20.1       | 1.1.0-beta.2   | ✅              | ✅             | ❌                | 1.20       | ✅                  |
 | 1.19-1.19.2       | 1.0.2          | ✅              | ✅             | ❌                | 1.19       | ✅                  |
 | 1.18-1.19.2       | 1.0.2          | ✅              | ✅             | ❌                | 1.18       | ✅                  |
 
@@ -24,12 +24,12 @@ Wiki is coming soon.
 ## Features
 
 - Basic classes
-- [x] Version checker
-- [x] Data generation API (by `SDataGeneration`)
-  - [x] Custom `DataProvider`(s) (based on [Fabric Data Generation Api](https://github.com/FabricMC/fabric/tree/1.20.1/fabric-data-generation-api-v1), under Apache-2.0 License)
-- [x] `DeferredRegisterManager`
-- [x] `SRegistrar` API (A more user-friendly alternative to `DeferredRegister`)
-  - [x] Create custom registry
+- Version checker
+- Data generation API (by `SDataGeneration`)
+  - Custom `DataProvider`(s) (based on [Fabric Data Generation Api](https://github.com/FabricMC/fabric/tree/1.20.1/fabric-data-generation-api-v1), under Apache-2.0 License)
+- `DeferredRegisterManager`
+- `SRegistrar` API (A more user-friendly alternative to `DeferredRegister`)
+  - Create custom registry
 
 ## Todos
 
