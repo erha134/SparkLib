@@ -33,25 +33,25 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-public abstract class SRegistrar {
-    private static final Map<String, SRegistrar> REGISTRARS = new HashMap<>();
+public abstract class Registrar {
+    private static final Map<String, Registrar> REGISTRARS = new HashMap<>();
 
     @Getter
     protected final String modId;
     private boolean locked;
 
-    protected SRegistrar(String modId) {
+    protected Registrar(String modId) {
         this.modId = modId;
     }
 
     @ApiStatus.Internal
     @ExpectPlatform
-    public static SRegistrar create(String modId) {
+    public static Registrar create(String modId) {
         throw new AssertionError();
     }
 
-    public static SRegistrar getOrCreate(String modId) {
-        return REGISTRARS.computeIfAbsent(modId, SRegistrar::create);
+    public static Registrar getOrCreate(String modId) {
+        return REGISTRARS.computeIfAbsent(modId, Registrar::create);
     }
 
     public abstract <R, T extends R> RegistryHolder<T> register(Registry<R> registry, String id, Supplier<T> supplier);
@@ -118,27 +118,23 @@ public abstract class SRegistrar {
         return this.register(Registries.ITEM_GROUP, id, supplier);
     }
 
-    public RegistryHolder<ItemGroup> group(String id, Text title, Supplier<ItemStack> icon, UnaryOperator<ItemGroup.Builder> factory) {
-        return this.group(id, () -> factory.apply(this.createGroupBuilder(title, icon)).build());
+    public RegistryHolder<ItemGroup> simpleGroup(String id, Supplier<ItemStack> icon, UnaryOperator<ItemGroup.Builder> factory) {
+        return this.group(id, () -> factory.apply(this.createGroupBuilder(
+                Text.translatable("itemGroup." + this.modId + "." + id), icon)).build());
     }
 
     protected abstract ItemGroup.Builder createGroupBuilder(Text title, Supplier<ItemStack> icon);
 
-    public RegistryHolder<ItemGroup> simpleGroup(String id, Text title, ItemConvertible icon) {
-        return this.simpleGroup(id, title, new ItemStack(icon));
+    public RegistryHolder<ItemGroup> simpleGroup(String id, ItemConvertible icon) {
+        return this.simpleGroup(id, new ItemStack(icon));
     }
 
-    public RegistryHolder<ItemGroup> simpleGroup(String id, Text title, ItemStack icon) {
-        return this.simpleGroup(id, title, () -> icon);
+    public RegistryHolder<ItemGroup> simpleGroup(String id, ItemStack icon) {
+        return this.simpleGroup(id, () -> icon);
     }
 
-    public RegistryHolder<ItemGroup> simpleGroup(String id, Text title, Supplier<ItemStack> icon) {
-        return this.group(id, title, icon, UnaryOperator.identity());
-    }
-
-    @Deprecated
-    public RegistryHolder<ItemGroup> simpleGroup(String id, ItemGroup group) {
-        return this.group(id, () -> group);
+    public RegistryHolder<ItemGroup> simpleGroup(String id, Supplier<ItemStack> icon) {
+        return this.simpleGroup(id, icon, UnaryOperator.identity());
     }
 
     // Fluid
@@ -163,7 +159,8 @@ public abstract class SRegistrar {
 
     // Block entity type
 
-    public <BE extends BlockEntity> RegistryHolder<BlockEntityType<BE>> blockEntity(String id, Supplier<BlockEntityType<BE>> supplier) {
+    public <BE extends BlockEntity> RegistryHolder<BlockEntityType<BE>> blockEntity(String id,
+                                                                                    Supplier<BlockEntityType<BE>> supplier) {
         return this.register(Registries.BLOCK_ENTITY_TYPE, id, supplier);
     }
 
@@ -180,7 +177,8 @@ public abstract class SRegistrar {
         return this.simpleBlockEntity(id, BlockEntityType.Builder.create(factory, validateBlocks).build(type));
     }
 
-    public <BE extends BlockEntity> RegistryHolder<BlockEntityType<BE>> simpleBlockEntity(String id, BlockEntityType<BE> type) {
+    public <BE extends BlockEntity> RegistryHolder<BlockEntityType<BE>> simpleBlockEntity(String id,
+                                                                                          BlockEntityType<BE> type) {
         return this.blockEntity(id, () -> type);
     }
 
@@ -221,7 +219,7 @@ public abstract class SRegistrar {
 
     public final void register() {
         if (this.locked) {
-            throw new IllegalStateException("SRegistrar has locked");
+            throw new IllegalStateException("Registrar has locked");
         }
 
         this.locked = true;

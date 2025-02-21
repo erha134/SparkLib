@@ -12,6 +12,7 @@ public final class SparkLib {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
     public static void init() {
+        
     }
 
     private SparkLib() {

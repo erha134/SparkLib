@@ -21,7 +21,7 @@ extendable method net/minecraft/data/client/ModelProvider getName ()Ljava/lang/S
 accessible field net/minecraft/data/client/ModelProvider blockstatesPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
 accessible field net/minecraft/data/client/ModelProvider modelsPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
 
-# SRegistrar
+# Registrar
 accessible method net/minecraft/registry/Registries create (Lnet/minecraft/registry/RegistryKey;Lcom/mojang/serialization/Lifecycle;Lnet/minecraft/registry/Registries$Initializer;)Lnet/minecraft/registry/Registry;
 accessible method net/minecraft/registry/Registries create (Lnet/minecraft/registry/RegistryKey;Ljava/lang/String;Lcom/mojang/serialization/Lifecycle;Lnet/minecraft/registry/Registries$Initializer;)Lnet/minecraft/registry/DefaultedRegistry;
 accessible class net/minecraft/registry/Registries$Initializer

@@ -13,5 +13,7 @@ public final class SparkLibForge {
         if (FMLEnvironment.dist.isClient()) {
             SparkLibClient.initClient();
         }
+
+
     }
 }
