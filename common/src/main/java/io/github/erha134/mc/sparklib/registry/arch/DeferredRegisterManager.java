@@ -33,7 +33,7 @@ public final class DeferredRegisterManager {
         return TagKey.of(registry.getKey(), new Identifier(this.modId, id));
     }
 
-    public final void register() {
+    public void register() {
         this.deferredRegisters.values().forEach(DeferredRegister::register);
     }
 }
