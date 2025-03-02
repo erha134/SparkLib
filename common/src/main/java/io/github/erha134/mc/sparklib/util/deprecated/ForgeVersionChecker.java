@@ -1,4 +1,4 @@
-package io.github.erha134.mc.sparklib.util;
+package io.github.erha134.mc.sparklib.util.deprecated;
 
 import com.google.gson.Gson;
 import dev.architectury.platform.Platform;
@@ -9,13 +9,13 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.maven.artifact.versioning.ComparableVersion;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public final class VersionChecker {
+@Deprecated
+public final class ForgeVersionChecker {
     public enum Status {
         PENDING,
         FAILED,
@@ -58,8 +58,7 @@ public final class VersionChecker {
         return CompletableFuture.supplyAsync(() -> doCheck(version, url));
     }
 
-    @ApiStatus.Internal
-    public static CheckContext doCheck(String version, String url) {
+    private static CheckContext doCheck(String version, String url) {
         CheckContext context = new CheckContext(Status.PENDING, version);
         try (CloseableHttpClient client = HttpClients.createDefault();
              CloseableHttpResponse response = client.execute(new HttpGet(url))) {

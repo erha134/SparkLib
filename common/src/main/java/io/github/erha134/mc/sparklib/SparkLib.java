@@ -3,6 +3,7 @@ package io.github.erha134.mc.sparklib;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
 import dev.architectury.platform.Platform;
 import io.github.erha134.mc.sparklib.command.SparkLibCommands;
+import io.github.erha134.mc.sparklib.patched.SIdentifier;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,6 @@ public final class SparkLib {
     }
 
     public static Identifier id(String path) {
-        return new Identifier(MOD_ID, path);
+        return SIdentifier.create(MOD_ID, path);
     }
 }
