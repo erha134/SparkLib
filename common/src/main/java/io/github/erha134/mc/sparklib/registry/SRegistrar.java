@@ -33,25 +33,25 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-public abstract class Registrar {
-    private static final Map<String, Registrar> REGISTRARS = new HashMap<>();
+public abstract class SRegistrar {
+    private static final Map<String, SRegistrar> REGISTRARS = new HashMap<>();
 
     @Getter
     protected final String modId;
     private boolean locked;
 
-    protected Registrar(String modId) {
+    protected SRegistrar(String modId) {
         this.modId = modId;
     }
 
     @ApiStatus.Internal
     @ExpectPlatform
-    public static Registrar create(String modId) {
+    public static SRegistrar create(String modId) {
         throw new AssertionError();
     }
 
-    public static Registrar getOrCreate(String modId) {
-        return REGISTRARS.computeIfAbsent(modId, Registrar::create);
+    public static SRegistrar getOrCreate(String modId) {
+        return REGISTRARS.computeIfAbsent(modId, SRegistrar::create);
     }
 
     public abstract <R, T extends R> RegistryHolder<T> register(Registry<R> registry, String id, Supplier<T> supplier);
@@ -219,7 +219,7 @@ public abstract class Registrar {
 
     public final void register() {
         if (this.locked) {
-            throw new IllegalStateException("Registrar has locked");
+            throw new IllegalStateException("SRegistrar has locked");
         }
 
         this.locked = true;

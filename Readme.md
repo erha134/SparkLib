@@ -24,7 +24,7 @@ Wiki is coming soon.
 ## Features
 
 - Basic classes
-- Version checker
+- Version checker (by `ForgeVersionChecker`)
 - Data generation API (by `SDataGeneration`)
   - Custom `DataProvider`(s) (based on [Fabric Data Generation Api](https://github.com/FabricMC/fabric/tree/1.20.1/fabric-data-generation-api-v1), under Apache-2.0 License)
 - `DeferredRegisterManager`

@@ -54,4 +54,9 @@ dependencies {
 
 //    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${rootProject.mixinextras_version}"))
 //    implementation(include("io.github.llamalad7:mixinextras-forge:${rootProject.mixinextras_version}"))
+
+    // fix runtime NoClassDefError
+    forgeRuntimeLibrary "com.github.erha134:EasyLib:${rootProject.easylib_version}"
+    forgeRuntimeLibrary "com.github.erha134.SparkConfig:sparkconfig-core:${rootProject.sparkconfig_version}"
+    forgeRuntimeLibrary "com.github.erha134.SparkConfig:sparkconfig-serializers-gson:${rootProject.sparkconfig_version}"
 }

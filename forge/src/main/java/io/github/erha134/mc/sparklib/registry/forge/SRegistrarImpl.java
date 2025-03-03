@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
 import dev.architectury.platform.forge.EventBuses;
 import io.github.erha134.mc.sparklib.registry.RegistryHolder;
-import io.github.erha134.mc.sparklib.registry.Registrar;
+import io.github.erha134.mc.sparklib.registry.SRegistrar;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.*;
@@ -20,18 +20,18 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public final class RegistrarImpl extends Registrar {
+public final class SRegistrarImpl extends SRegistrar {
     private final IEventBus bus;
     private final Map<Identifier, DeferredRegister<?>> deferredRegisters = new HashMap<>();
     private final List<Consumer<DataPackRegistryEvent.NewRegistry>> newDatapackRegistries = new ArrayList<>();
 
-    private RegistrarImpl(String modId) {
+    private SRegistrarImpl(String modId) {
         super(modId);
         this.bus = EventBuses.getModEventBus(modId).orElseThrow();
     }
 
-    public static Registrar create(String modId) {
-        return new RegistrarImpl(modId);
+    public static SRegistrar create(String modId) {
+        return new SRegistrarImpl(modId);
     }
 
     @Override

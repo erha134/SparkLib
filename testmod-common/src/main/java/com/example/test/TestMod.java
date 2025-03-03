@@ -1,6 +1,7 @@
 package com.example.test;
 
 import com.example.test.registry.TestRegister;
+import io.github.erha134.mc.sparklib.util.version.ForgeVersionChecker;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,9 @@ public final class TestMod {
 
     public static void init() {
         TestRegister.register();
+        ForgeVersionChecker.check("forge").thenAccept(ctx -> {
+            LOGGER.info("Status: {}, Version: {}", ctx.getStatus(), ctx.getEither().left().orElse(null));
+        });
     }
 
     public static Identifier id(String path) {

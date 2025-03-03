@@ -2,7 +2,7 @@ package io.github.erha134.mc.sparklib.registry.fabric;
 
 import com.mojang.serialization.Codec;
 import io.github.erha134.mc.sparklib.registry.RegistryHolder;
-import io.github.erha134.mc.sparklib.registry.Registrar;
+import io.github.erha134.mc.sparklib.registry.SRegistrar;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -11,19 +11,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.DefaultedRegistry;
 import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.function.Supplier;
 
-public final class RegistrarImpl extends Registrar {
-    private RegistrarImpl(String modId) {
+public final class SRegistrarImpl extends SRegistrar {
+    private SRegistrarImpl(String modId) {
         super(modId);
     }
 
-    public static Registrar create(String modId) {
-        return new RegistrarImpl(modId);
+    public static SRegistrar create(String modId) {
+        return new SRegistrarImpl(modId);
     }
 
     @Override
